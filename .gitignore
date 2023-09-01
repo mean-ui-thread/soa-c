@@ -119,12 +119,31 @@ dist
 # TernJS port file
 .tern-port
 
-# Stores VSCode versions used for testing VSCode extensions
-.vscode-test
-
 # yarn v2
 .yarn/cache
 .yarn/unplugged
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+###############################################################
+
+# Files from package managers other than pnpm
+package-lock.json
+yarn.lock
+.yarn-integrity
+
+# eslint cache
+.eslintcache
+
+# Output of 'pnpm pack'
+*.tgz
+
+# MacOS temporary files
+.DS_Store
+
+# Visual Studio Code
+.code-workspace
+.vscode/*
+.vscode-test
+!.vscode/extensions.json
