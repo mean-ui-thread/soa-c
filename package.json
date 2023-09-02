@@ -1,19 +1,35 @@
 {
+  "$schema": "https://json.schemastore.org/package",
   "name": "soa-c",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "A CLI that code generate Struct-of-Arrays (SOA) C code from a JSON descriptor file.",
+  "main": "dist/index.js",
+  "bin": {
+    "soa-c": "./dist/index.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
-    "lint": "eslint src/**/*.ts",
-    "format": "prettier src/**/*.ts",
+    "lint": "eslint --fix src/**/*.ts",
+    "format": "prettier --write src/**/*.ts",
     "prepare": "husky install"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "cli",
+    "struct of arrays",
+    "soa",
+    "code generator",
+    "C",
+    "C++"
+  ],
+  "author": "Mean-UI-Thread",
   "license": "ISC",
+  "repository": "https://github.com/mean-ui-thread/soa-c",
+  "homepage": "https://github.com/mean-ui-thread/soa-c#readme",
   "devDependencies": {
+    "@tsconfig/node-lts": "^18.12.5",
+    "@types/figlet": "^1.5.6",
+    "@types/node": "^20.5.8",
     "@typescript-eslint/eslint-plugin": "^6.5.0",
     "@typescript-eslint/parser": "^6.5.0",
     "eslint": "^8.48.0",
@@ -21,5 +37,10 @@
     "lint-staged": "^14.0.1",
     "prettier": "^3.0.3",
     "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "chalk": "~4.1.2",
+    "commander": "^11.0.0",
+    "figlet": "^1.6.0"
   }
 }

@@ -147,3 +147,6 @@ yarn.lock
 .vscode/*
 .vscode-test
 !.vscode/extensions.json
+
+# build artefacts
+dist/
