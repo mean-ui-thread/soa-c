@@ -1,0 +1,83 @@
+{
+    "name": "scene_node",
+    "description": "A nestable structure that contains transformation properties of graphical and non-graphical elements. Building block of a scene tree",
+    "instance_initial_capacity": 128,
+    "instance_allocator": "malloc",
+    "instance_reallocator": "realloc",
+    "instalce_deallocator": "free",
+    "soa_fields": [
+        {
+            "soa_field_name": "position_x",
+            "soa_field_description": "horizontal position of a scene node in pixel unit",
+            "soa_field_type": "float"
+        },
+        {
+            "soa_field_name": "position_y",
+            "soa_field_description": "vertical position of a scene node in pixel unit",
+            "soa_field_type": "float"
+        },
+        {
+            "soa_field_name": "rotation",
+            "soa_field_description": "Z-rotation angle of a scene node in radians",
+            "soa_field_type": "float"
+        },
+        {
+            "soa_field_name": "scale_x",
+            "soa_field_description": "horizontal scaling of a scene node in pixel unit",
+            "soa_field_type": "float"
+        },
+        {
+            "soa_field_name": "scale_y",
+            "soa_field_description": "vertical scaling of a scene node in pixel unit",
+            "soa_field_type": "float"
+        },
+        {
+            "soa_field_name": "local_mat_a",
+            "soa_field_type": "float"
+        },
+        {
+            "soa_field_name": "local_mat_b",
+            "soa_field_type": "float"
+        },
+        {
+            "soa_field_name": "local_mat_c",
+            "soa_field_type": "float"
+        },
+        {
+            "soa_field_name": "local_mat_d",
+            "soa_field_type": "float"
+        },
+        {
+            "soa_field_name": "local_mat_e",
+            "soa_field_type": "float"
+        },
+        {
+            "soa_field_name": "local_mat_f",
+            "soa_field_type": "float"
+        },
+        {
+            "soa_field_name": "world_mat_a",
+            "soa_field_type": "float"
+        },
+        {
+            "soa_field_name": "world_mat_b",
+            "soa_field_type": "float"
+        },
+        {
+            "soa_field_name": "world_mat_c",
+            "soa_field_type": "float"
+        },
+        {
+            "soa_field_name": "world_mat_d",
+            "soa_field_type": "float"
+        },
+        {
+            "soa_field_name": "world_mat_e",
+            "soa_field_type": "float"
+        },
+        {
+            "soa_field_name": "world_mat_f",
+            "soa_field_type": "float"
+        }
+    ]
+}

@@ -1,20 +1,46 @@
 import chalk from 'chalk';
 import figlet from 'figlet';
-import { Command } from 'commander';
+import { Command, InvalidArgumentError } from 'commander';
+import { PathLike, existsSync, readFileSync } from 'fs';
 
-//add the following line
-const program = new Command();
+import { Convert, Descriptor } from './descriptor';
+import { soa_c } from './soa_c';
 
-console.log(chalk.blue(figlet.textSync('SOA-c', 'ANSI Shadow')));
+import details from './details.json';
 
-program
-  .version('1.0.0')
-  .description('An CLI that code generate Struct-of-Arrays (SOA) C code from a JSON descriptor file.')
-  .option('-c, --config  [value]', 'JSON Descriptor file')
-  .parse(process.argv);
+console.log(chalk.bold.blue(figlet.textSync(details.name, 'ANSI Shadow') + `v${details.version}`));
+console.log(chalk.blue(`By ${details.author} - Copyright (c) 2023 - All rights reserved`));
+console.log(chalk.blue(details.homepage));
 
-if (!process.argv.slice(2).length) {
-  program.outputHelp();
+function parseDescriptorFileArg(descriptorFilePath: PathLike) {
+  console.log(chalk.bold.green(`Loading ${descriptorFilePath} ...`));
+
+  if (!existsSync(descriptorFilePath)) {
+    throw new InvalidArgumentError(`'${descriptorFilePath}' does not exist.`);
+  }
+
+  const data = readFileSync(descriptorFilePath, 'utf-8').toString();
+  if (data.length == 0) {
+    throw new InvalidArgumentError(`'${descriptorFilePath}' file is empty.`);
+  }
+
+  try {
+    const result: Descriptor = Convert.toDescriptor(data);
+    return result;
+  } catch (err) {
+    throw new InvalidArgumentError(`${err}`);
+  }
 }
 
-//const options = program.opts();
+new Command()
+  .version(details.version)
+  .description(details.description)
+  .configureOutput({ outputError: (str, write) => write(chalk.bold.red(str)) })
+  .argument('<descriptorFile>', 'JSON Descriptor file', parseDescriptorFileArg)
+  .showHelpAfterError(chalk.yellow('(add --help for additional information)'))
+  .action((descriptorFile: Descriptor) => {
+    const generator = new soa_c(descriptorFile);
+    const header = generator.generateHeader();
+    console.log(header);
+  })
+  .parse(process.argv);

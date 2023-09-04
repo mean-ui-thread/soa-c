@@ -1,0 +1,55 @@
+/******************************************************************************
+ * <%= structName %>
+ * <%= descriptor.description %>
+ *
+ * ----------------------------------------------------------------------------
+ * 
+ * This header file was code-generated on <%= new Date().toLocaleDateString() %> using: <%= details.name %> v<%= details.version %>
+ * <%= details.description %>
+ *
+ * By <%= details.author %>
+ * <%= details.homepage %>
+ *****************************************************************************/
+#ifndef <%= guard %>
+#define <%= guard %> 1
+
+<%= descriptor.includes?.map((include) => {
+
+    let comment = include.includeComment ? ' /* ' + include.includeComment + ' */' : ''
+
+    if (include.includeIsLocal) {
+        return `#include "${include.includeFileName}"${comment}`
+    } else {
+        return `#include <${include.includeFileName}>${comment}`
+    }
+  }).join('\n')
+%>
+
+/* opaque handle for <%= structName %> */
+typedef struct <%= structName %> { unsigned int index; } <%= structName %>_t;
+
+
+<%= descriptor.soaFields.map((soaField) => {
+    const soaFieldName = makeCIdentifier(soaField.soaFieldName)
+    return (
+        '/**\n' +
+        ` * Getter for ${soaFieldName}\n` +
+        (soaField.soaFieldDescription ? ` * ${soaField.soaFieldDescription}\n` : '') +
+        ` * @return A ${soaField.soaFieldType} value\n` +
+        ` * @sa ${structName}_set_${soaFieldName}\n` +
+        ' */\n' +
+        `${soaField.soaFieldType} ${structName}_get_${soaFieldName}(${structName}_t handle);\n` +
+        '\n' +
+        '/**\n' +
+        ` * Setter for ${soaFieldName}\n` +
+        (soaField.soaFieldDescription ? ` * ${soaField.soaFieldDescription}\n` : '') +
+        ` * @param value A ${soaField.soaFieldType} value\n` +
+        ` * @sa ${structName}_get_${soaFieldName}\n` +
+        ' */\n' +
+        `void ${structName}_get_${soaFieldName}(${structName}_t handle, ${soaField.soaFieldType} value);`
+    )
+  }).join('\n\n\n')
+%>
+
+#endif /* <%= guard %> */
+ 

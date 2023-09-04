@@ -1,0 +1,16 @@
+/******************************************************************************
+ * <%= descriptor.name %>
+ * <%= descriptor.description %>
+ *
+ * ----------------------------------------------------------------------------
+ * 
+ * This source file was code-generated on <%= new Date().toLocaleDateString() %> using: <%= details.name %> v<%= details.version %>
+ * <%= details.description %>
+ *
+ * By <%= details.author %>
+ * <%= details.homepage %>
+ *****************************************************************************/
+
+ #include "<%= descriptor.name %>.h"
+
+ #include <stdlib.h> /* malloc()/calloc()/realloc()/free() */

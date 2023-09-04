@@ -2,14 +2,16 @@
   "$schema": "https://json.schemastore.org/package",
   "name": "soa-c",
   "version": "1.0.0",
-  "description": "A CLI that code generate Struct-of-Arrays (SOA) C code from a JSON descriptor file.",
+  "description": "A CLI that generates Struct-of-Arrays (SOA) C code from a JSON descriptor file.",
   "main": "dist/index.js",
   "bin": {
     "soa-c": "./dist/index.js"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "./bin/soa-c examples/scene_node.json",
+    "clean": "tsc --build --clean",
     "build": "tsc",
+    "postbuild": "copyfiles -u 1 src/**/*.template dist/",
     "lint": "eslint --fix src/**/*.ts",
     "format": "prettier --write src/**/*.ts",
     "prepare": "husky install"
@@ -29,9 +31,11 @@
   "devDependencies": {
     "@tsconfig/node-lts": "^18.12.5",
     "@types/figlet": "^1.5.6",
+    "@types/lodash": "^4.14.197",
     "@types/node": "^20.5.8",
     "@typescript-eslint/eslint-plugin": "^6.5.0",
     "@typescript-eslint/parser": "^6.5.0",
+    "copyfiles": "^2.4.1",
     "eslint": "^8.48.0",
     "husky": "^8.0.3",
     "lint-staged": "^14.0.1",
@@ -41,6 +45,7 @@
   "dependencies": {
     "chalk": "~4.1.2",
     "commander": "^11.0.0",
-    "figlet": "^1.6.0"
+    "figlet": "^1.6.0",
+    "lodash": "^4.17.21"
   }
 }

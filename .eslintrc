@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/eslintrc",
   "parser": "@typescript-eslint/parser",
-  "extends": ["plugin:@typescript-eslint/recommended"],
+  "extends": ["plugin:@typescript-eslint/strict"],
   "parserOptions": { "ecmaVersion": 2022, "sourceType": "script" },
   "rules": {}
 }
