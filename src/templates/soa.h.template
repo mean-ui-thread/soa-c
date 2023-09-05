@@ -1,26 +1,41 @@
-/******************************************************************************
- * <%= structName %>
- * <%= descriptor.description %>
+<%
+  const cIdentifier = makeCIdentifier(descriptor.name);
+  const guard = _.toUpper(_.snakeCase(cIdentifier)) + '_H'
+  const structName = descriptor.style === 'camelCase' ? 
+    _.upperFirst(_.camelCase(cIdentifier)) : 
+    _.snakeCase(cIdentifier)
+  const structTypeName = structName + '_t'
+  const funcNamePrefix = _.lowerFirst(structName);
+  const wrapOptions = {indent: ' * ', width: 76}
+%>/******************************************************************************
+<%= wrap(`${structName} - ${descriptor.description}`, wrapOptions) %>
  *
  * ----------------------------------------------------------------------------
  * 
- * This header file was code-generated on <%= new Date().toLocaleDateString() %> using: <%= details.name %> v<%= details.version %>
- * <%= details.description %>
- *
- * By <%= details.author %>
+<%= wrap(`This header file was code-generated on ${new Date().toUTCString()}, using:`, wrapOptions) %>
+ * 
+ * <%= details.name %> v<%= details.version %>
+<%= wrap(details.description, wrapOptions) %>
+ * 
+ * By: <%= details.author %>
  * <%= details.homepage %>
+ * 
  *****************************************************************************/
 #ifndef <%= guard %>
 #define <%= guard %> 1
 
-<%= descriptor.includes?.map((include) => {
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-    let comment = include.includeComment ? ' /* ' + include.includeComment + ' */' : ''
+<%= descriptor.headerIncludes?.map((include) => {
 
-    if (include.includeIsLocal) {
-        return `#include "${include.includeFileName}"${comment}`
+    let comment = include.comment ? ' /* ' + include.comment + ' */' : ''
+
+    if (include.isLocal) {
+        return `#include "${include.fileName}"${comment}`
     } else {
-        return `#include <${include.includeFileName}>${comment}`
+        return `#include <${include.fileName}>${comment}`
     }
   }).join('\n')
 %>
@@ -30,26 +45,41 @@ typedef struct <%= structName %> { unsigned int index; } <%= structName %>_t;
 
 
 <%= descriptor.soaFields.map((soaField) => {
-    const soaFieldName = makeCIdentifier(soaField.soaFieldName)
+    const soaFieldCIdentifier = makeCIdentifier(soaField.name)
+    const soaFieldName = (descriptor.style === 'camelCase' ?
+      _.camelCase(soaFieldCIdentifier) :
+      _.snakeCase(soaFieldCIdentifier))
+    const soaGetterName = funcNamePrefix + (descriptor.style === 'camelCase' ?
+      'Get' +  _.upperFirst(soaFieldName) :
+      '_get_' + soaFieldName)
+    const soaSetterName = funcNamePrefix + (descriptor.style === 'camelCase' ?
+      'Set' +  _.upperFirst(soaFieldName) :
+      '_set_' + soaFieldName)
     return (
         '/**\n' +
         ` * Getter for ${soaFieldName}\n` +
-        (soaField.soaFieldDescription ? ` * ${soaField.soaFieldDescription}\n` : '') +
-        ` * @return A ${soaField.soaFieldType} value\n` +
-        ` * @sa ${structName}_set_${soaFieldName}\n` +
+        (soaField.comment ? ` * ${soaField.comment}\n` : '') +
+        ` * @param handle the ${structName} instance\n` +
+        ` * @return The value of ${soaFieldName}\n` +
+        ` * @sa ${soaSetterName}\n` +
         ' */\n' +
-        `${soaField.soaFieldType} ${structName}_get_${soaFieldName}(${structName}_t handle);\n` +
+        `${soaField.type} ${soaGetterName}(${structTypeName} handle);\n` +
         '\n' +
         '/**\n' +
         ` * Setter for ${soaFieldName}\n` +
-        (soaField.soaFieldDescription ? ` * ${soaField.soaFieldDescription}\n` : '') +
-        ` * @param value A ${soaField.soaFieldType} value\n` +
-        ` * @sa ${structName}_get_${soaFieldName}\n` +
+        (soaField.comment ? ` * ${soaField.comment}\n` : '') +
+        ` * @param handle the ${structName} instance\n` +
+        ` * @param ${soaFieldName} The value of ${soaFieldName}\n` +
+        ` * @sa ${soaGetterName}\n` +
         ' */\n' +
-        `void ${structName}_get_${soaFieldName}(${structName}_t handle, ${soaField.soaFieldType} value);`
+        `void ${soaSetterName}(${structTypeName} handle, ${soaField.type} ${soaFieldName});`
     )
   }).join('\n\n\n')
 %>
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* <%= guard %> */
  

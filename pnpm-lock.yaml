@@ -17,6 +17,9 @@ dependencies:
   lodash:
     specifier: ^4.17.21
     version: 4.17.21
+  word-wrap:
+    specifier: ^1.2.5
+    version: 1.2.5
 
 devDependencies:
   '@tsconfig/node-lts':
@@ -1368,6 +1371,11 @@ packages:
     dependencies:
       isexe: 2.0.0
     dev: true
+
+  /word-wrap@1.2.5:
+    resolution: {integrity: sha512-BN22B5eaMMI9UMtjrGd5g5eCYPpCPDUy0FJXbYsaT5zYxjFOckS53SQDE3pWkVoWpHXVb3BrYcEN4Twa55B5cA==}
+    engines: {node: '>=0.10.0'}
+    dev: false
 
   /wrap-ansi@7.0.0:
     resolution: {integrity: sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==}

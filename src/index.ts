@@ -3,7 +3,7 @@ import figlet from 'figlet';
 import { Command, InvalidArgumentError } from 'commander';
 import { PathLike, existsSync, readFileSync } from 'fs';
 
-import { Convert, Descriptor } from './descriptor';
+import { DescriptorUtility, IDescriptor } from './descriptor';
 import { soa_c } from './soa_c';
 
 import details from './details.json';
@@ -25,7 +25,7 @@ function parseDescriptorFileArg(descriptorFilePath: PathLike) {
   }
 
   try {
-    const result: Descriptor = Convert.toDescriptor(data);
+    const result: IDescriptor = DescriptorUtility.toDescriptor(data);
     return result;
   } catch (err) {
     throw new InvalidArgumentError(`${err}`);
@@ -38,7 +38,7 @@ new Command()
   .configureOutput({ outputError: (str, write) => write(chalk.bold.red(str)) })
   .argument('<descriptorFile>', 'JSON Descriptor file', parseDescriptorFileArg)
   .showHelpAfterError(chalk.yellow('(add --help for additional information)'))
-  .action((descriptorFile: Descriptor) => {
+  .action((descriptorFile: IDescriptor) => {
     const generator = new soa_c(descriptorFile);
     const header = generator.generateHeader();
     console.log(header);

@@ -5,45 +5,54 @@
 
 // To parse this data:
 //
-//   import { Convert, Descriptor } from "./descriptor";
+//   import { DescriptorUtility, IDescriptor } from "./descriptor";
 //
-//   const descriptor = Convert.toDescriptor(json);
+//   const descriptor = DescriptorUtility.toDescriptor(json);
 //
 // These functions will throw an error if the JSON doesn't
 // match the expected interface, even if the JSON is valid.
 
-export interface Descriptor {
+export interface IDescriptor {
+  $schema?: string;
   name: string;
-  description: string;
-  includes?: Include[];
+  description?: string;
+  author?: string;
+  headerIncludes?: IInclude[];
+  sourceIncludes?: IInclude[];
+  style: EStyle;
   instanceInitialCapacity: number;
   instanceAllocator: string;
   instanceReallocator: string;
   instalceDeallocator: string;
-  soaFields: SOAField[];
+  soaFields: ISOAField[];
 }
 
-export interface Include {
-  includeFileName: string;
-  includeIsLocal?: boolean;
-  includeComment?: string;
+export interface IInclude {
+  fileName: string;
+  isLocal?: boolean;
+  comment?: string;
 }
 
-export interface SOAField {
-  soaFieldName: string;
-  soaFieldDescription?: string;
-  soaFieldType: string;
+export interface ISOAField {
+  name: string;
+  description?: string;
+  type: string;
+}
+
+export enum EStyle {
+  camelCase = 'camelCase',
+  snakeCase = 'snakeCase'
 }
 
 // Converts JSON strings to/from your types
 // and asserts the results of JSON.parse at runtime
-export class Convert {
-  public static toDescriptor(json: string): Descriptor {
-    return cast(JSON.parse(json), r('Descriptor'));
+export class DescriptorUtility {
+  public static toDescriptor(json: string): IDescriptor {
+    return cast(JSON.parse(json), r('IDescriptor'));
   }
 
-  public static descriptorToJson(value: Descriptor): string {
-    return JSON.stringify(uncast(value, r('Descriptor')), null, 2);
+  public static descriptorToJson(value: IDescriptor): string {
+    return JSON.stringify(uncast(value, r('IDescriptor')), null, 2);
   }
 }
 
@@ -214,33 +223,38 @@ function r(name: string) {
 }
 
 const typeMap: any = {
-  Descriptor: o(
+  IDescriptor: o(
+    [
+      { json: '$schema', js: '$schema', typ: u(undefined, '') },
+      { json: 'name', js: 'name', typ: '' },
+      { json: 'description', js: 'description', typ: u(undefined, '') },
+      { json: 'author', js: 'author', typ: u(undefined, '') },
+      { json: 'headerIncludes', js: 'headerIncludes', typ: u(undefined, a(r('IInclude'))) },
+      { json: 'sourceIncludes', js: 'sourceIncludes', typ: u(undefined, a(r('IInclude'))) },
+      { json: 'style', js: 'style', typ: r('EStyle') },
+      { json: 'instanceInitialCapacity', js: 'instanceInitialCapacity', typ: 0 },
+      { json: 'instanceAllocator', js: 'instanceAllocator', typ: '' },
+      { json: 'instanceReallocator', js: 'instanceReallocator', typ: '' },
+      { json: 'instalceDeallocator', js: 'instalceDeallocator', typ: '' },
+      { json: 'soaFields', js: 'soaFields', typ: a(r('ISOAField')) }
+    ],
+    false
+  ),
+  IInclude: o(
+    [
+      { json: 'fileName', js: 'fileName', typ: '' },
+      { json: 'isLocal', js: 'isLocal', typ: u(undefined, false) },
+      { json: 'comment', js: 'comment', typ: u(undefined, '') }
+    ],
+    false
+  ),
+  ISOAField: o(
     [
       { json: 'name', js: 'name', typ: '' },
-      { json: 'description', js: 'description', typ: '' },
-      { json: 'includes', js: 'includes', typ: u(undefined, a(r('Include'))) },
-      { json: 'instance_initial_capacity', js: 'instanceInitialCapacity', typ: 0 },
-      { json: 'instance_allocator', js: 'instanceAllocator', typ: '' },
-      { json: 'instance_reallocator', js: 'instanceReallocator', typ: '' },
-      { json: 'instalce_deallocator', js: 'instalceDeallocator', typ: '' },
-      { json: 'soa_fields', js: 'soaFields', typ: a(r('SOAField')) }
+      { json: 'type', js: 'type', typ: '' },
+      { json: 'comment', js: 'comment', typ: u(undefined, '') }
     ],
     false
   ),
-  Include: o(
-    [
-      { json: 'include_file_name', js: 'includeFileName', typ: '' },
-      { json: 'include_is_local', js: 'includeIsLocal', typ: u(undefined, false) },
-      { json: 'include_comment', js: 'includeComment', typ: u(undefined, '') }
-    ],
-    false
-  ),
-  SOAField: o(
-    [
-      { json: 'soa_field_name', js: 'soaFieldName', typ: '' },
-      { json: 'soa_field_description', js: 'soaFieldDescription', typ: u(undefined, '') },
-      { json: 'soa_field_type', js: 'soaFieldType', typ: '' }
-    ],
-    false
-  )
+  EStyle: ['camelCase', 'snakeCase']
 };

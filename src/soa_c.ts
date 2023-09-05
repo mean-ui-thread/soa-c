@@ -1,23 +1,26 @@
 import { readFileSync } from 'fs';
+import wrap from 'word-wrap';
 import _ from 'lodash';
 import details from './details.json';
-import { makeCIdentifier } from './utils';
+import makeCIdentifier from './makeCIdentifier';
 
-import { Descriptor } from './descriptor';
+import { IDescriptor } from './descriptor';
 
 export class soa_c {
-  private descriptor: Descriptor;
+  private descriptor: IDescriptor;
 
-  public constructor(descriptor: Descriptor) {
+  public constructor(descriptor: IDescriptor) {
     this.descriptor = descriptor;
   }
 
-  public getDescriptor(): Descriptor {
+  public getDescriptor(): IDescriptor {
     return this.descriptor;
   }
 
   public generateSource(): string {
     const template = _.template(readFileSync(__dirname + '/templates/soa.c.template').toString());
+
+    // TODO
 
     const params = {
       descriptor: this.descriptor
@@ -29,14 +32,11 @@ export class soa_c {
   public generateHeader(): string {
     const template = _.template(readFileSync(__dirname + '/templates/soa.h.template').toString());
 
-    const structName = makeCIdentifier(this.descriptor.name);
-
     const params = {
       descriptor: this.descriptor,
       details: details,
-      structName: structName,
-      guard: `${_.toUpper(structName)}_H`,
       makeCIdentifier,
+      wrap,
       _
     };
 
