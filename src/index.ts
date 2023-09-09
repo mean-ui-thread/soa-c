@@ -3,7 +3,7 @@ import figlet from 'figlet';
 import { Command, InvalidArgumentError } from 'commander';
 import { PathLike, existsSync, readFileSync } from 'fs';
 
-import { DescriptorUtility, IDescriptor } from './descriptor';
+import { Convert, IDescriptor } from './descriptor';
 import { soa_c } from './soa_c';
 
 import details from './details.json';
@@ -25,7 +25,7 @@ function parseDescriptorFileArg(descriptorFilePath: PathLike) {
   }
 
   try {
-    const result: IDescriptor = DescriptorUtility.toDescriptor(data);
+    const result: IDescriptor = Convert.toIDescriptor(data);
     return result;
   } catch (err) {
     throw new InvalidArgumentError(`${err}`);

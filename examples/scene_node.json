@@ -7,7 +7,7 @@
     "instanceInitialCapacity": 128,
     "instanceAllocator": "malloc",
     "instanceReallocator": "realloc",
-    "instalceDeallocator": "free",
+    "instanceDeallocator": "free",
     "soaFields": [
         {
             "name": "position_x",

@@ -1,57 +1,119 @@
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 /* eslint-disable  @typescript-eslint/no-extraneous-class */
+/* eslint-disable  @typescript-eslint/no-unused-vars */
 
-// THIS FILE WAS INITIALLY GENERATED FROM https://app.quicktype.io/
+// THIS FILE WAS INITIALLY GENERATED FROM https://app.quicktype.io/ using docs/schema/descriptor.json
+
+// ----------------------------------- PASTE UNDER THIS LINE -----------------------------------
 
 // To parse this data:
 //
-//   import { DescriptorUtility, IDescriptor } from "./descriptor";
+//   import { Convert, IDescriptor } from "./file";
 //
-//   const descriptor = DescriptorUtility.toDescriptor(json);
+//   const iDescriptor = Convert.toIDescriptor(json);
 //
 // These functions will throw an error if the JSON doesn't
 // match the expected interface, even if the JSON is valid.
 
 export interface IDescriptor {
   $schema?: string;
-  name: string;
-  description?: string;
+  /**
+   * the the author of the C struct name. This will be used when code-generating the comment
+   * if it is available.
+   */
   author?: string;
+  /**
+   * the description of the C struct name. This will be used when code-generating the comment
+   * if it is available.
+   */
+  description?: string;
+  /**
+   * The list of includes to add to the code-generated header file.
+   */
   headerIncludes?: IInclude[];
-  sourceIncludes?: IInclude[];
-  style: EStyle;
-  instanceInitialCapacity: number;
-  instanceAllocator: string;
-  instanceReallocator: string;
-  instalceDeallocator: string;
+  /**
+   * The allocator of your choice
+   */
+  instanceAllocator?: string;
+  /**
+   * The deallocator of your choice
+   */
+  instanceDeallocator?: string;
+  /**
+   * The initial SOA capacity when allocating for the first time
+   */
+  instanceInitialCapacity?: number;
+  /**
+   * The reallocator of your choice
+   */
+  instanceReallocator?: string;
+  /**
+   * the C struct name
+   */
+  name: string;
+  /**
+   * The list of fields to generate into your SOA structure
+   */
   soaFields: ISOAField[];
+  /**
+   * The list of includes to add to the code-generated source file.
+   */
+  sourceIncludes?: IInclude[];
+  /**
+   * The generation format style of your choice
+   */
+  style?: EStyle;
 }
 
 export interface IInclude {
-  fileName: string;
-  isLocal?: boolean;
+  /**
+   * Optional comment to describe what the file inclusion is for. It will generate a comment
+   */
   comment?: string;
+  /**
+   * The file name to include
+   */
+  fileName: string;
+  /**
+   * Setting this to true will use double quotes inclusion. Otherwise, it will use triangular
+   * brackets
+   */
+  isLocal?: boolean;
 }
 
 export interface ISOAField {
+  /**
+   * Optional comment to describe what the file inclusion is for. It will be added to the
+   * doxygen comment
+   */
+  comment?: string;
+  /**
+   * The name of the field to generate.
+   */
   name: string;
-  description?: string;
+  /**
+   * The type of the field to generate. It can be a built-in type such as int, float, or your
+   * own custom type
+   */
   type: string;
 }
 
+/**
+ * The generation format style of your choice
+ */
 export enum EStyle {
-  camelCase = 'camelCase',
-  snakeCase = 'snakeCase'
+  CamelCase = 'camelCase',
+  SnakeCase = 'snakeCase'
 }
 
 // Converts JSON strings to/from your types
 // and asserts the results of JSON.parse at runtime
-export class DescriptorUtility {
-  public static toDescriptor(json: string): IDescriptor {
+export class Convert {
+  public static toIDescriptor(json: string): IDescriptor {
     return cast(JSON.parse(json), r('IDescriptor'));
   }
 
-  public static descriptorToJson(value: IDescriptor): string {
+  public static iDescriptorToJson(value: IDescriptor): string {
     return JSON.stringify(uncast(value, r('IDescriptor')), null, 2);
   }
 }
@@ -214,9 +276,9 @@ function o(props: any[], additional: any) {
   return { props, additional };
 }
 
-// function m(additional: any) {
-//     return { props: [], additional };
-// }
+function m(additional: any) {
+  return { props: [], additional };
+}
 
 function r(name: string) {
   return { ref: name };
@@ -226,33 +288,33 @@ const typeMap: any = {
   IDescriptor: o(
     [
       { json: '$schema', js: '$schema', typ: u(undefined, '') },
-      { json: 'name', js: 'name', typ: '' },
-      { json: 'description', js: 'description', typ: u(undefined, '') },
       { json: 'author', js: 'author', typ: u(undefined, '') },
+      { json: 'description', js: 'description', typ: u(undefined, '') },
       { json: 'headerIncludes', js: 'headerIncludes', typ: u(undefined, a(r('IInclude'))) },
+      { json: 'instanceAllocator', js: 'instanceAllocator', typ: u(undefined, '') },
+      { json: 'instanceDeallocator', js: 'instanceDeallocator', typ: u(undefined, '') },
+      { json: 'instanceInitialCapacity', js: 'instanceInitialCapacity', typ: u(undefined, 0) },
+      { json: 'instanceReallocator', js: 'instanceReallocator', typ: u(undefined, '') },
+      { json: 'name', js: 'name', typ: '' },
+      { json: 'soaFields', js: 'soaFields', typ: a(r('ISOAField')) },
       { json: 'sourceIncludes', js: 'sourceIncludes', typ: u(undefined, a(r('IInclude'))) },
-      { json: 'style', js: 'style', typ: r('EStyle') },
-      { json: 'instanceInitialCapacity', js: 'instanceInitialCapacity', typ: 0 },
-      { json: 'instanceAllocator', js: 'instanceAllocator', typ: '' },
-      { json: 'instanceReallocator', js: 'instanceReallocator', typ: '' },
-      { json: 'instalceDeallocator', js: 'instalceDeallocator', typ: '' },
-      { json: 'soaFields', js: 'soaFields', typ: a(r('ISOAField')) }
+      { json: 'style', js: 'style', typ: u(undefined, r('EStyle')) }
     ],
     false
   ),
   IInclude: o(
     [
+      { json: 'comment', js: 'comment', typ: u(undefined, '') },
       { json: 'fileName', js: 'fileName', typ: '' },
-      { json: 'isLocal', js: 'isLocal', typ: u(undefined, false) },
-      { json: 'comment', js: 'comment', typ: u(undefined, '') }
+      { json: 'isLocal', js: 'isLocal', typ: u(undefined, true) }
     ],
     false
   ),
   ISOAField: o(
     [
+      { json: 'comment', js: 'comment', typ: u(undefined, '') },
       { json: 'name', js: 'name', typ: '' },
-      { json: 'type', js: 'type', typ: '' },
-      { json: 'comment', js: 'comment', typ: u(undefined, '') }
+      { json: 'type', js: 'type', typ: '' }
     ],
     false
   ),

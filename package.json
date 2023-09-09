@@ -25,7 +25,7 @@
     "C++"
   ],
   "author": "Mean-UI-Thread",
-  "license": "ISC",
+  "license": "MIT",
   "repository": "https://github.com/mean-ui-thread/soa-c",
   "homepage": "https://github.com/mean-ui-thread/soa-c#readme",
   "devDependencies": {
