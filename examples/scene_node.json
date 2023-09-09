@@ -1,13 +1,9 @@
 {
-    "$schema": "https://mean-ui-thread.github.io/soa-c/schema/descriptor",
+    "$schema": "https://mean-ui-thread.github.io/soa-c/schema/descriptor.json",
     "name": "scene_node",
     "description": "A nestable structure that contains transformation properties of graphical and non-graphical elements. Building block of a scene tree.",
     "author": "Mean-UI-Thread",
     "style": "camelCase",
-    "instanceInitialCapacity": 128,
-    "instanceAllocator": "malloc",
-    "instanceReallocator": "realloc",
-    "instanceDeallocator": "free",
     "soaFields": [
         {
             "name": "position_x",
