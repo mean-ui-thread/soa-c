@@ -19,8 +19,13 @@
                     "type": "string"
                 },
                 "outputPath": {
-                    "descrioption": "the path where to output the generated code source and header files.",
+                    "description": "the path where to output the generated code source and header files.",
                     "type": "string"
+                },
+                "indent": {
+                    "description": "Intendation characters to use. For example, it can be a tab \"\\t\", or two spaces \"  \" or four spaces: \"    \", etc. Default is 4 spaces.",
+                    "type": "string",
+                    "default": "    "
                 },
                 "author": {
                     "description": "the the author of the C struct name. This will be used when code-generating the comment if it is available.",

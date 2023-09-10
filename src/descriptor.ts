@@ -1,21 +1,13 @@
-/* eslint-disable  @typescript-eslint/no-explicit-any */
-/* eslint-disable  @typescript-eslint/no-extraneous-class */
-/* eslint-disable  @typescript-eslint/no-unused-vars */
-
-// THIS FILE WAS INITIALLY GENERATED FROM https://app.quicktype.io/ using docs/schema/descriptor.json
-
-// ----------------------------------- PASTE UNDER THIS LINE -----------------------------------
-
 // To parse this data:
 //
-//   import { Convert, IDescriptor } from "./file";
+//   import { Convert, Descriptor } from "./file";
 //
-//   const iDescriptor = Convert.toIDescriptor(json);
+//   const descriptor = Convert.toDescriptor(json);
 //
 // These functions will throw an error if the JSON doesn't
 // match the expected interface, even if the JSON is valid.
 
-export interface IDescriptor {
+export interface Descriptor {
   $schema?: string;
   /**
    * the the author of the C struct name. This will be used when code-generating the comment
@@ -31,6 +23,11 @@ export interface IDescriptor {
    * The list of includes to add to the code-generated header file.
    */
   headerIncludes?: IInclude[];
+  /**
+   * Intendation characters to use. For example, it can be a tab "\t", or two spaces "  " or
+   * four spaces: "    ", etc. Default is 4 spaces.
+   */
+  indent?: string;
   /**
    * The allocator of your choice
    */
@@ -51,6 +48,9 @@ export interface IDescriptor {
    * the C struct name
    */
   name: string;
+  /**
+   * the path where to output the generated code source and header files.
+   */
   outputPath: string;
   /**
    * The list of fields to generate into your SOA structure
@@ -110,12 +110,12 @@ export enum EStyle {
 // Converts JSON strings to/from your types
 // and asserts the results of JSON.parse at runtime
 export class Convert {
-  public static toIDescriptor(json: string): IDescriptor {
-    return cast(JSON.parse(json), r('IDescriptor'));
+  public static toDescriptor(json: string): Descriptor {
+    return cast(JSON.parse(json), r('Descriptor'));
   }
 
-  public static iDescriptorToJson(value: IDescriptor): string {
-    return JSON.stringify(uncast(value, r('IDescriptor')), null, 2);
+  public static descriptorToJson(value: Descriptor): string {
+    return JSON.stringify(uncast(value, r('Descriptor')), null, 2);
   }
 }
 
@@ -286,12 +286,13 @@ function r(name: string) {
 }
 
 const typeMap: any = {
-  IDescriptor: o(
+  Descriptor: o(
     [
       { json: '$schema', js: '$schema', typ: u(undefined, '') },
       { json: 'author', js: 'author', typ: u(undefined, '') },
       { json: 'description', js: 'description', typ: u(undefined, '') },
       { json: 'headerIncludes', js: 'headerIncludes', typ: u(undefined, a(r('IInclude'))) },
+      { json: 'indent', js: 'indent', typ: u(undefined, '') },
       { json: 'instanceAllocator', js: 'instanceAllocator', typ: u(undefined, '') },
       { json: 'instanceDeallocator', js: 'instanceDeallocator', typ: u(undefined, '') },
       { json: 'instanceInitialCapacity', js: 'instanceInitialCapacity', typ: u(undefined, 0) },

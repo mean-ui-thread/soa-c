@@ -10,6 +10,7 @@
   "scripts": {
     "test": "./bin/soa-c examples/scene_node.json",
     "clean": "tsc --build --clean",
+    "prebuild": "quicktype -o src/descriptor.ts --src-lang schema docs/schema/descriptor.json",
     "build": "tsc",
     "postbuild": "copyfiles -u 1 src/**/*.template dist/",
     "lint": "eslint --fix src/**/*.ts",
@@ -40,6 +41,7 @@
     "husky": "^8.0.3",
     "lint-staged": "^14.0.1",
     "prettier": "^3.0.3",
+    "quicktype": "^23.0.75",
     "typescript": "^5.2.2"
   },
   "dependencies": {
