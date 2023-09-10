@@ -18,6 +18,10 @@
                     "description": "the description of the C struct name. This will be used when code-generating the comment if it is available.",
                     "type": "string"
                 },
+                "outputPath": {
+                    "descrioption": "the path where to output the generated code source and header files.",
+                    "type": "string"
+                },
                 "author": {
                     "description": "the the author of the C struct name. This will be used when code-generating the comment if it is available.",
                     "type": "string"
@@ -74,7 +78,7 @@
                     }
                 }
             },
-            "required": [ "name", "soaFields" ],
+            "required": [ "name", "outputPath", "soaFields" ],
             "title": "IDescriptor"
         },
         "Include": {

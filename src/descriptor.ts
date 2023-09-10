@@ -51,6 +51,7 @@ export interface IDescriptor {
    * the C struct name
    */
   name: string;
+  outputPath: string;
   /**
    * The list of fields to generate into your SOA structure
    */
@@ -296,6 +297,7 @@ const typeMap: any = {
       { json: 'instanceInitialCapacity', js: 'instanceInitialCapacity', typ: u(undefined, 0) },
       { json: 'instanceReallocator', js: 'instanceReallocator', typ: u(undefined, '') },
       { json: 'name', js: 'name', typ: '' },
+      { json: 'outputPath', js: 'outputPath', typ: '' },
       { json: 'soaFields', js: 'soaFields', typ: a(r('ISOAField')) },
       { json: 'sourceIncludes', js: 'sourceIncludes', typ: u(undefined, a(r('IInclude'))) },
       { json: 'style', js: 'style', typ: u(undefined, r('EStyle')) }
