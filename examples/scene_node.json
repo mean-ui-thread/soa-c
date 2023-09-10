@@ -4,7 +4,6 @@
     "outputPath": "examples/dist/",
     "description": "A nestable structure that contains transformation properties of graphical and non-graphical elements. Building block of a scene tree.",
     "author": "Mean-UI-Thread",
-    "style": "snakeCase",
     "soaFields": [
         {
             "name": "position_x",
