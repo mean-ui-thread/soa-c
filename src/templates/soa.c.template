@@ -1,3 +1,92 @@
- #include "<%= descriptor.name %>.h"
+#include "<%= descriptor.name %>.h"
 
- #include <stdlib.h> /* malloc()/calloc()/realloc()/free() */
+#include <stdlib.h> /* malloc, realloc, free */
+<%= descriptor.sourceIncludes?.map((include) => {
+
+    let comment = include.comment ? ' /* ' + include.comment + ' */' : '';
+
+    if (include.isLocal) {
+        return `#include "${include.fileName}"${comment}`;
+    } else {
+        return `#include <${include.fileName}>${comment}`;
+    }
+  }).join('\n')
+%>
+<% const soaStruct = formatter(`${descriptor.name} soa`) + '_t'  %>
+typedef struct
+{
+<%= 
+    descriptor.soaFields.sort().map((soaField) => {
+        return `${descriptor.indent}${soaField.type}* ${soaField.name};`
+    }).join('\n')
+%>
+<%= descriptor.indent %>size_t _count;
+<%= descriptor.indent %>size_t _capacity;
+} <%= soaStruct %>;
+<% const poolStruct = formatter(`${descriptor.name} pool`) + '_t' %>
+typedef struct
+{
+<%= descriptor.indent %>size_t* idx;
+<%= descriptor.indent %>size_t count;
+<%= descriptor.indent %>size_t capacity;
+} <%= poolStruct %>;
+<%
+    const soa = '_' + formatter(`${descriptor.name} soa`)
+    const instancePool = '_' + formatter(`${descriptor.name} instance pool`)
+    const availablePool = '_' + formatter(`${descriptor.name} available pool`)
+%>
+static <%= soaStruct %> <%= soa %> = {0};
+static <%= poolStruct %> <%= instancePool %> = {0};
+static <%= poolStruct %> <%= availablePool %> = {0};
+
+void <%= formatter(`${descriptor.name} init`) %>(void)
+{
+<%= descriptor.indent %>if (<%= soa %>._capacity != 0)
+<%= descriptor.indent %>{
+<%= descriptor.indent %><%= descriptor.indent %>return; /* <%= descriptor.name %> is already initialized */
+<%= descriptor.indent %>}
+
+<%= 
+    descriptor.soaFields.sort().map((soaField) => {
+        return `${descriptor.indent}${soa}.${soaField.name} = ${descriptor.instanceAllocator}(${descriptor.instanceInitialCapacity} * sizeof(${soaField.type}));`
+    }).join('\n')
+%>
+<%= descriptor.indent %><%= soa %>._capacity = <%= descriptor.instanceInitialCapacity %>;
+
+<%= descriptor.indent %><%= instancePool %>.idx = <%= descriptor.instanceAllocator %>(<%= descriptor.instanceInitialCapacity %> * sizeof(size_t));
+<%= descriptor.indent %><%= instancePool %>.capacity = <%= descriptor.instanceInitialCapacity %>;
+
+<%= descriptor.indent %><%= availablePool %>.idx = <%= descriptor.instanceAllocator %>(<%= descriptor.instanceInitialCapacity %> * sizeof(size_t));
+<%= descriptor.indent %><%= availablePool %>.capacity = <%= descriptor.instanceInitialCapacity %>;
+}
+
+void <%= formatter(`${descriptor.name} shutdown`) %>(void)
+{
+<%= descriptor.indent %>if (<%= soa %>._capacity == 0)
+<%= descriptor.indent %>{
+<%= descriptor.indent %><%= descriptor.indent %>return; /* <%= descriptor.name %> is already uninitialized */
+<%= descriptor.indent %>}
+
+<%= 
+    descriptor.soaFields.sort().map((soaField) => {
+        return `${descriptor.indent}${descriptor.instanceDeallocator}(${soa}.${soaField.name});`
+    }).join('\n')
+%>
+<%= 
+    descriptor.soaFields.sort().map((soaField) => {
+        return `${descriptor.indent}${soa}.${soaField.name} = NULL;`
+    }).join('\n')
+%>
+<%= descriptor.indent %><%= soa %>._count = 0;
+<%= descriptor.indent %><%= soa %>._capacity = 0;
+
+<%= descriptor.indent %>free(<%= instancePool %>.idx);
+<%= descriptor.indent %><%= instancePool %>.idx = NULL;
+<%= descriptor.indent %><%= instancePool %>.count = 0;
+<%= descriptor.indent %><%= instancePool %>.capacity = 0;
+
+<%= descriptor.indent %>free(<%= availablePool %>.idx);
+<%= descriptor.indent %><%= availablePool %>.idx = NULL;
+<%= descriptor.indent %><%= availablePool %>.count = 0;
+<%= descriptor.indent %><%= availablePool %>.capacity = 0;
+}

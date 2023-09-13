@@ -14,8 +14,12 @@ export function soa_c(descriptor: Descriptor) {
   }
 
   // Setting the defaults since quicktype doesn't seem to be doing that work for us
-  if (descriptor.style === undefined) descriptor.style = EStyle.CamelCase;
-  if (descriptor.indent === undefined) descriptor.indent = '    ';
+  if (!descriptor.style) descriptor.style = EStyle.CamelCase;
+  if (!descriptor.indent) descriptor.indent = '    ';
+  if (!descriptor.instanceInitialCapacity) descriptor.instanceInitialCapacity = 8;
+  if (!descriptor.instanceAllocator) descriptor.instanceAllocator = 'malloc';
+  if (!descriptor.instanceReallocator) descriptor.instanceReallocator = 'realloc';
+  if (!descriptor.instanceDeallocator) descriptor.instanceDeallocator = 'free';
 
   type Formatter = (str: string | undefined) => string;
 

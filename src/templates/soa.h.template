@@ -1,6 +1,7 @@
 #ifndef <%= _.toUpper(_.snakeCase(descriptor.name)) %>_H
 #define <%= _.toUpper(_.snakeCase(descriptor.name)) %>_H
 
+#include <stddef.h> /* size_t */
 <%= descriptor.headerIncludes?.map((include) => {
 
     let comment = include.comment ? ' /* ' + include.comment + ' */' : '';
@@ -18,7 +19,7 @@ extern "C" {
 #endif
 
 /* opaque instance for <%= descriptor.name %> */
-typedef struct <%= descriptor.name %> { unsigned int id; } <%= descriptor.name %>_t;
+typedef struct { size_t id; } <%= descriptor.name %>_t;
 
 /**
  * <%= descriptor.name %> Initializer
@@ -51,7 +52,7 @@ void <%= formatter(`${descriptor.name} shutdown`) %>(void);
  */
 void <%= formatter(`${descriptor.name} destroy`) %>(<%= descriptor.name %>_t instance);
 
-<%= descriptor.soaFields.map((soaField) => {
+<%= descriptor.soaFields.sort().map((soaField) => {
     const soaGetterName = formatter(`${descriptor.name} get ${soaField.name}`);
     const soaSetterName = formatter(`${descriptor.name} set ${soaField.name}`);
     return (
