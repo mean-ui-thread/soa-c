@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/package",
   "name": "soa-c",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "A CLI that generates Struct-of-Arrays (SOA) C code from a JSON descriptor file.",
   "main": "dist/index.js",
   "bin": {
@@ -12,7 +12,6 @@
     "clean": "tsc --build --clean",
     "prebuild": "quicktype -o src/descriptor.ts --src-lang schema docs/schema/descriptor.json",
     "build": "tsc",
-    "postbuild": "copyfiles -u 1 src/**/*.template dist/",
     "lint": "eslint --fix src/**/*.ts",
     "format": "prettier --write src/**/*.ts",
     "prepare": "husky install"
@@ -36,7 +35,6 @@
     "@types/node": "^20.5.8",
     "@typescript-eslint/eslint-plugin": "^6.5.0",
     "@typescript-eslint/parser": "^6.5.0",
-    "copyfiles": "^2.4.1",
     "eslint": "^8.48.0",
     "husky": "^8.0.3",
     "lint-staged": "^14.0.1",

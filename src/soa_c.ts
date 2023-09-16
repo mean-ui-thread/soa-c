@@ -1,12 +1,13 @@
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
-import wrap from 'word-wrap';
+import { existsSync, mkdirSync, writeFileSync } from 'fs';
+
+import chalk from 'chalk';
 import _ from 'lodash';
-import figlet from 'figlet';
-import details from './details.json';
-import makeCIdentifier from './makeCIdentifier';
 
 import { Descriptor, EStyle, ISOAField } from './descriptor';
-import chalk from 'chalk';
+import { Formatter } from './types';
+import makeCIdentifier from './utils/makeCIdentifier';
+import soaHeader from './templates/soaHeader';
+import soaSource from './templates/soaSource';
 
 export function soa_c(descriptor: Descriptor) {
   if (!existsSync(descriptor.outputPath)) {
@@ -20,8 +21,6 @@ export function soa_c(descriptor: Descriptor) {
   if (!descriptor.instanceAllocator) descriptor.instanceAllocator = 'malloc';
   if (!descriptor.instanceReallocator) descriptor.instanceReallocator = 'realloc';
   if (!descriptor.instanceDeallocator) descriptor.instanceDeallocator = 'free';
-
-  type Formatter = (str: string | undefined) => string;
 
   let formatter: Formatter;
 
@@ -40,23 +39,8 @@ export function soa_c(descriptor: Descriptor) {
     }
   }
 
-  const params = {
-    descriptor: descriptor,
-    details: details,
-    formatter,
-    figlet,
-    wrap,
-    _
-  };
-
-  const headingTemplate = _.template(readFileSync(__dirname + '/templates/soa.heading.template').toString());
-  const headerTemplate = _.template(readFileSync(__dirname + '/templates/soa.h.template').toString());
-  const sourceTemplate = _.template(readFileSync(__dirname + '/templates/soa.c.template').toString());
-
-  const headingContent = headingTemplate(params);
-
-  const headerFileContent = headingContent + headerTemplate(params);
-  const sourceFileContent = headingContent + sourceTemplate(params);
+  const headerFileContent = soaHeader(descriptor, formatter);
+  const sourceFileContent = soaSource(descriptor, formatter);
 
   const headerFilePath = `${descriptor.outputPath}/${descriptor.name}.h`;
   const sourceFilePath = `${descriptor.outputPath}/${descriptor.name}.c`;
