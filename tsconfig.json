@@ -5,7 +5,6 @@
       "declaration": true,       // Generate .d.ts files from TypeScript and JavaScript files in your project.
       "declarationMap": true,    // Create sourcemaps for d.ts files.
       "outDir": "dist",          // .js (as well as .d.ts, .js.map, etc.) files will be emitted into this directory.
-      "resolveJsonModule": true, // Enable importing .json files
       "sourceMap": true,         // Create source map files for emitted JavaScript files.
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],
