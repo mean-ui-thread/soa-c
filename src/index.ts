@@ -6,11 +6,7 @@ import { PathLike, existsSync, readFileSync } from 'fs';
 import { Convert, Descriptor } from './descriptor';
 import { soa_c } from './soa_c';
 
-import details from './details.json';
-
-console.log(chalk.bold.blue(figlet.textSync(details.name, 'ANSI Shadow') + `v${details.version}`));
-console.log(chalk.blue(`By ${details.author} - Copyright (c) 2023 - All rights reserved`));
-console.log(chalk.blue(details.homepage));
+import { Constants } from './constants';
 
 function parseDescriptorFileArg(descriptorFilePath: PathLike) {
   console.log(chalk.bold.green(`Loading ${descriptorFilePath} ...`));
@@ -33,10 +29,20 @@ function parseDescriptorFileArg(descriptorFilePath: PathLike) {
 }
 
 new Command()
-  .version(details.version)
-  .description(details.description)
+  .version(Constants.VERSION)
+  .description(Constants.DESCRIPTION)
   .configureOutput({ outputError: (str, write) => write(chalk.bold.red(str)) })
-  .argument('<descriptorFile>', 'JSON Descriptor file', parseDescriptorFileArg)
+  .addHelpText(
+    'beforeAll',
+    [
+      '',
+      chalk.bold.blue(`${figlet.textSync(Constants.NAME, 'ANSI Shadow').trim()} v${Constants.VERSION}`),
+      chalk.blue(`By ${Constants.AUTHOR} - Copyright (c) ${Constants.RELEASED_YEAR} - All rights reserved`),
+      chalk.greenBright(Constants.HOMEPAGE),
+      ''
+    ].join('\n')
+  )
   .showHelpAfterError(chalk.yellow('(add --help for additional information)'))
+  .argument('<descriptorFile>', 'JSON Descriptor file', parseDescriptorFileArg)
   .action((descriptorFile: Descriptor) => soa_c(descriptorFile))
   .parse(process.argv);

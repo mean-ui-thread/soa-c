@@ -10,7 +10,7 @@
   "scripts": {
     "test": "./bin/soa-c examples/scene_node.json",
     "clean": "tsc --build --clean",
-    "prebuild": "quicktype -o src/descriptor.ts --src-lang schema docs/schema/descriptor.json",
+    "prebuild": "./scripts/prebuild.sh",
     "build": "tsc",
     "lint": "eslint --fix src/**/*.ts",
     "format": "prettier --write src/**/*.ts",

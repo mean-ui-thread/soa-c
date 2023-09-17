@@ -150,3 +150,7 @@ yarn.lock
 
 # build artefacts
 dist/
+
+# Code-generated Artefacts
+src/descriptor.ts
+src/constants.ts
