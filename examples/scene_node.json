@@ -1,34 +1,34 @@
 {
-    "$schema": "https://mean-ui-thread.github.io/soa-c/schema/descriptor.json",
-    "name": "scene_node",
-    "outputPath": "examples/dist/",
-    "description": "A nestable structure that contains transformation properties of graphical and non-graphical elements. Building block of a scene tree.",
-    "author": "Mean-UI-Thread",
-    "soaFields": [
-        {
-            "name": "position_x",
-            "type": "float",
-            "comment": "horizontal position of a scene node in pixel fragment unit"
-        },
-        {
-            "name": "position_y",
-            "type": "float",
-            "comment": "vertical position of a scene node in pixel fragment unit"
-        },
-        {
-            "name": "rotation",
-            "type": "float",
-            "comment": "Z-rotation angle of a scene node in radians"
-        },
-        {
-            "name": "scale_x",
-            "type": "float",
-            "comment": "horizontal scaling of a scene node in multiplication factor"
-        },
-        {
-            "name": "scale_y",
-            "type": "float",
-            "comment": "vertical scaling of a scene node in multiplicaton factor"
-        }
-    ]
+  "$schema": "https://mean-ui-thread.github.io/soa-c/schema/descriptor.json",
+  "name": "scene_node",
+  "outputPath": "examples/dist/",
+  "description": "A nestable structure that contains transformation properties of graphical and non-graphical elements. Building block of a scene tree.",
+  "author": "Mean-UI-Thread",
+  "soaFields": [
+    {
+      "name": "position_x",
+      "type": "float",
+      "comment": "horizontal position of a scene node in pixel fragment unit"
+    },
+    {
+      "name": "position_y",
+      "type": "float",
+      "comment": "vertical position of a scene node in pixel fragment unit"
+    },
+    {
+      "name": "rotation",
+      "type": "float",
+      "comment": "Z-rotation angle of a scene node in radians"
+    },
+    {
+      "name": "scale_x",
+      "type": "float",
+      "comment": "horizontal scaling of a scene node in multiplication factor"
+    },
+    {
+      "name": "scale_y",
+      "type": "float",
+      "comment": "vertical scaling of a scene node in multiplicaton factor"
+    }
+  ]
 }

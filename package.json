@@ -13,7 +13,7 @@
     "prebuild": "./scripts/prebuild.sh",
     "build": "tsc",
     "lint": "eslint --fix src/**/*.ts",
-    "format": "prettier --write src/**/*.ts",
+    "format": "prettier --write **/*.ts **/*.json **/*.md",
     "prepare": "husky install"
   },
   "keywords": [
