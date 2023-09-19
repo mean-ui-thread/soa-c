@@ -1,131 +1,105 @@
 {
-    "$schema": "http://json-schema.org/draft-06/schema#",
-    "$ref": "#/definitions/Descriptor",
-    "definitions": {
-        "Descriptor": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-                "$schema": {
-                    "type": "string",
-                    "format": "uri"
-                },
-                "name": {
-                    "description": "the C struct name",
-                    "type": "string"
-                },
-                "description": {
-                    "description": "the description of the C struct name. This will be used when code-generating the comment if it is available.",
-                    "type": "string"
-                },
-                "outputPath": {
-                    "description": "the path where to output the generated code source and header files.",
-                    "type": "string"
-                },
-                "indent": {
-                    "description": "Intendation characters to use. For example, it can be a tab \"\\t\", or two spaces \"  \" or four spaces: \"    \", etc. Default is 4 spaces.",
-                    "type": "string",
-                    "default": "    "
-                },
-                "author": {
-                    "description": "the the author of the C struct name. This will be used when code-generating the comment if it is available.",
-                    "type": "string"
-                },
-                "style": {
-                    "description": "The generation format style of your choice",
-                    "type": "string",
-                    "title": "EStyle",
-                    "enum": [
-                        "camelCase",
-                        "snakeCase"
-                    ],
-                    "default": "camelCase"
-                },
-                "headerIncludes": {
-                    "description": "The list of includes to add to the code-generated header file.",
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/Include"
-                    }
-                },
-                "sourceIncludes": {
-                    "description": "The list of includes to add to the code-generated source file.",
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/Include"
-                    }
-                },
-                "instanceInitialCapacity": {
-                    "description": "The initial SOA capacity when allocating for the first time",
-                    "type": "integer",
-                    "default": "8"
-                },
-                "instanceAllocator": {
-                    "description": "The allocator of your choice",
-                    "type": "string",
-                    "default": "malloc"
-                },
-                "instanceReallocator": {
-                    "description": "The reallocator of your choice",
-                    "type": "string",
-                    "default": "realloc"
-                },
-                "instanceDeallocator": {
-                    "description": "The deallocator of your choice",
-                    "type": "string",
-                    "default": "free"
-                },
-                "soaFields": {
-                    "description": "The list of fields to generate into your SOA structure",
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/SOAField"
-                    }
-                }
-            },
-            "required": [ "name", "outputPath", "soaFields" ],
-            "title": "IDescriptor"
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "$ref": "#/definitions/Descriptor",
+  "definitions": {
+    "Descriptor": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "$schema": {
+          "type": "string",
+          "format": "uri"
         },
-        "Include": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-                "fileName": {
-                    "description": "The file name to include",
-                    "type": "string"
-                },
-                "isLocal": {
-                    "description": "Setting this to true will use double quotes inclusion. Otherwise, it will use triangular brackets",
-                    "type": "boolean",
-                    "default": false
-                },
-                "comment": {
-                    "description": "Optional comment to describe what the file inclusion is for. It will generate a comment",
-                    "type": "string"
-                }
-            },
-            "required": [ "fileName" ],
-            "title": "IInclude"
+        "name": {
+          "description": "the C struct name",
+          "type": "string"
         },
-        "SOAField": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-                "name": {
-                    "description": "The name of the field to generate.",
-                    "type": "string"
-                },
-                "comment": {
-                    "description": "Optional comment to describe what the file inclusion is for. It will be added to the doxygen comment",
-                    "type": "string"
-                },
-                "type": {
-                    "description": "The type of the field to generate. It can be a built-in type such as int, float, or your own custom type",
-                    "type": "string"
-                }
-            },
-            "required": [ "name", "type" ],
-            "title": "ISOAField"
+        "description": {
+          "description": "the description of the C struct name. This will be used when code-generating the comment if it is available.",
+          "type": "string"
+        },
+        "outputPath": {
+          "description": "the path where to output the generated code source and header files.",
+          "type": "string"
+        },
+        "indent": {
+          "description": "Intendation characters to use. For example, it can be a tab \"\\t\", or two spaces \"  \" or four spaces: \"    \", etc. Default is 4 spaces.",
+          "type": "string",
+          "default": "    "
+        },
+        "author": {
+          "description": "the the author of the C struct name. This will be used when code-generating the comment if it is available.",
+          "type": "string"
+        },
+        "style": {
+          "description": "The generation format style of your choice",
+          "type": "string",
+          "title": "EStyle",
+          "enum": ["camelCase", "snakeCase"],
+          "default": "camelCase"
+        },
+        "headerIncludes": {
+          "description": "The list of includes to add to the code-generated header file.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Include"
+          }
+        },
+        "sourceIncludes": {
+          "description": "The list of includes to add to the code-generated source file.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Include"
+          }
+        },
+        "soaFields": {
+          "description": "The list of fields to generate into your SOA structure",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SOAField"
+          }
         }
+      },
+      "required": ["name", "outputPath", "soaFields"]
+    },
+    "Include": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "fileName": {
+          "description": "The file name to include",
+          "type": "string"
+        },
+        "isLocal": {
+          "description": "Setting this to true will use double quotes inclusion. Otherwise, it will use triangular brackets",
+          "type": "boolean",
+          "default": false
+        },
+        "comment": {
+          "description": "Optional comment to describe what the file inclusion is for. It will generate a comment",
+          "type": "string"
+        }
+      },
+      "required": ["fileName"]
+    },
+    "SOAField": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "description": "The name of the field to generate.",
+          "type": "string"
+        },
+        "comment": {
+          "description": "Optional comment to describe what the file inclusion is for. It will be added to the doxygen comment",
+          "type": "string"
+        },
+        "type": {
+          "description": "The type of the field to generate. It can be a built-in type such as int, float, or your own custom type",
+          "type": "string"
+        }
+      },
+      "required": ["name", "type"]
     }
+  }
 }

@@ -1,7 +1,7 @@
 {
   "$schema": "https://mean-ui-thread.github.io/soa-c/schema/descriptor.json",
   "name": "scene_node",
-  "outputPath": "examples/dist/",
+  "outputPath": "examples/generated/",
   "description": "A nestable structure that contains transformation properties of graphical and non-graphical elements. Building block of a scene tree.",
   "author": "Mean-UI-Thread",
   "soaFields": [
