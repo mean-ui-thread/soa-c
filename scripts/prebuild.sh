@@ -18,6 +18,10 @@ echo Generating 'src/descriptor.ts'
 cat << EOF > src/descriptor.ts
 ${HEADER}
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-extraneous-class */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 $(npx quicktype --lang ts --src-lang schema docs/schema/descriptor.json --nice-property-names)
 EOF
 
@@ -26,6 +30,8 @@ EOF
 echo Generating 'src/constants.ts'
 cat << EOF > src/constants.ts
 ${HEADER}
+
+/* eslint-disable @typescript-eslint/no-extraneous-class */
 
 export class Constants {
   static readonly AUTHOR: string = '$(node -p "require('./package.json').author")';

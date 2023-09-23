@@ -12,7 +12,7 @@
     "clean": "tsc --build --clean",
     "prebuild": "./scripts/prebuild.sh",
     "build": "tsc",
-    "lint": "eslint --fix src/**/*.ts",
+    "lint": "eslint --fix src/",
     "format": "prettier --write **/*.ts **/*.json **/*.md",
     "prepare": "husky install"
   },
