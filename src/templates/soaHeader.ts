@@ -1,7 +1,5 @@
-import _ from 'lodash';
-
 import { Descriptor } from '../descriptor';
-import { Formatter } from '../types';
+import { Style } from '../style';
 
 import definitions from './definitions';
 import heading from './heading';
@@ -9,23 +7,23 @@ import { headerIncludes, sourceIncludes } from './includes';
 import { functionPrototypes, functionDefinitions } from './functions';
 import structures from './structures';
 
-export default function soaHeader(descriptor: Descriptor, formatter: Formatter): string {
-  const macroPrefix = _.toUpper(_.snakeCase(descriptor.name));
+export default function soaHeader(descriptor: Descriptor, style: Style): string {
+  const macroPrefix = style.macroDefinition(descriptor.name);
 
   return [
-    heading(descriptor),
+    heading(descriptor, style),
     `#ifndef ${macroPrefix}_H`,
     `#define ${macroPrefix}_H`,
     '',
-    headerIncludes(descriptor),
+    headerIncludes(descriptor, style),
     '',
     '#ifdef __cplusplus',
     'extern "C" {',
     '#endif',
     '',
-    structures(descriptor, formatter),
+    structures(descriptor, style),
     '',
-    functionPrototypes(descriptor, formatter),
+    functionPrototypes(descriptor, style),
     '',
     '#ifdef __cplusplus',
     '}',
@@ -35,15 +33,15 @@ export default function soaHeader(descriptor: Descriptor, formatter: Formatter):
     '',
     `#ifdef ${macroPrefix}_IMPLEMENTATION`,
     '',
-    sourceIncludes(descriptor),
+    sourceIncludes(descriptor, style),
     '',
-    definitions(descriptor),
+    definitions(descriptor, style),
     '',
     '#ifdef __cplusplus',
     'extern "C" {',
     '#endif',
     '',
-    functionDefinitions(descriptor, formatter),
+    functionDefinitions(descriptor, style),
     '',
     '#ifdef __cplusplus',
     '}',

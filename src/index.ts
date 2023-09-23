@@ -44,5 +44,14 @@ new Command()
   )
   .showHelpAfterError(chalk.yellow('(add --help for additional information)'))
   .argument('<descriptorFile>', 'JSON Descriptor file', parseDescriptorFileArg)
-  .action((descriptorFile: Descriptor) => soa_c(descriptorFile))
+  .option(
+    '-o, --output-path <outputPath>',
+    "The path where to output the generated source file. This also overrides the 'descriptor.outputPath' from the descriptor file if it was specified. If unspecified from neither descriptor.outputPath nor the command line option, soa-c will output the generated code content through the standard output."
+  )
+  .action((descriptorFile: Descriptor, options) => {
+    if (options.outputPath) {
+      descriptorFile.outputPath = options.outputPath;
+    }
+    soa_c(descriptorFile);
+  })
   .parse(process.argv);

@@ -1,1 +1,1 @@
-export type Formatter = (str: string | undefined) => string;
+export type FormatterFunction = (string: string) => string;

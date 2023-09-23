@@ -1,14 +1,14 @@
 import _ from 'lodash';
 import { Descriptor } from '../descriptor';
-import { Formatter } from '../types';
+import { Style } from '../style';
 import wrap from 'word-wrap';
 
-export function functionPrototypes(descriptor: Descriptor, formatter: Formatter): string {
-  const managerStruct = `${formatter(`${descriptor.name} manager`)}_t`;
-  const managerCreateFunc = formatter(`${descriptor.name} manager create`);
-  const managerDestroyFunc = formatter(`${descriptor.name} manager destroy`);
-  const instanceCreateFunc = formatter(`${descriptor.name} create`);
-  const instanceDestroyFunc = formatter(`${descriptor.name} destroy`);
+export function functionPrototypes(descriptor: Descriptor, style: Style): string {
+  const managerStruct = style.struct(`${descriptor.name} manager`);
+  const managerCreateFunc = style.function(`${descriptor.name} manager create`);
+  const managerDestroyFunc = style.function(`${descriptor.name} manager destroy`);
+  const instanceCreateFunc = style.function(`${descriptor.name} create`);
+  const instanceDestroyFunc = style.function(`${descriptor.name} destroy`);
 
   return [
     '/**',
@@ -42,8 +42,8 @@ export function functionPrototypes(descriptor: Descriptor, formatter: Formatter)
     descriptor.soaFields
       .sort()
       .map((soaField) => {
-        const soaGetterName = formatter(`${descriptor.name} get ${soaField.name}`);
-        const soaSetterName = formatter(`${descriptor.name} set ${soaField.name}`);
+        const soaGetterName = style.function(`${descriptor.name} get ${soaField.name}`);
+        const soaSetterName = style.function(`${descriptor.name} set ${soaField.name}`);
         return (
           `/**\n` +
           ` * Getter for ${soaField.name}\n` +
@@ -68,38 +68,38 @@ export function functionPrototypes(descriptor: Descriptor, formatter: Formatter)
   ].join('\n');
 }
 
-export function functionDefinitions(descriptor: Descriptor, formatter: Formatter): string {
+export function functionDefinitions(descriptor: Descriptor, style: Style): string {
   const macroPrefix = _.toUpper(_.snakeCase(descriptor.name));
 
-  const managerStruct = `${formatter(`${descriptor.name} manager`)}_t`;
-  const managerCreateFunc = formatter(`${descriptor.name} manager create`);
-  const managerDestroyFunc = formatter(`${descriptor.name} manager destroy`);
-  //const instanceCreateFunc = formatter(`${descriptor.name} create`);
-  //const instanceDestroyFunc = formatter(`${descriptor.name} destroy`);
+  const managerStruct = style.struct(`${descriptor.name} manager`);
+  const managerCreateFunc = style.function(`${descriptor.name} manager create`);
+  const managerDestroyFunc = style.function(`${descriptor.name} manager destroy`);
+  //const instanceCreateFunc = style.function(`${descriptor.name} create`);
+  //const instanceDestroyFunc = style.function(`${descriptor.name} destroy`);
 
   return [
     `${managerStruct}* ${managerCreateFunc}(void)`,
     '{',
-    `${descriptor.indent} ${managerStruct}* mgr = malloc(sizeof(${managerStruct}));`,
+    `${style.indent} ${managerStruct}* mgr = malloc(sizeof(${managerStruct}));`,
     '',
     descriptor.soaFields
       .sort()
       .map((soaField) => {
-        return `${descriptor.indent}mgr->${soaField.name} = ${macroPrefix}_ALIGNED_ALLOC(${macroPrefix}_ALIGNMENT, ${macroPrefix}_ALIGNMENT * sizeof(${soaField.type}));`;
+        return `${style.indent}mgr->${soaField.name} = ${macroPrefix}_ALIGNED_ALLOC(${macroPrefix}_ALIGNMENT, ${macroPrefix}_ALIGNMENT * sizeof(${soaField.type}));`;
       })
       .join('\n'),
-    `${descriptor.indent}mgr->_capacity = ${macroPrefix}_ALIGNMENT;`,
-    `${descriptor.indent}mgr->_count = 0;`,
+    `${style.indent}mgr->_capacity = ${macroPrefix}_ALIGNMENT;`,
+    `${style.indent}mgr->_count = 0;`,
     '',
-    `${descriptor.indent}mgr->_instances.idx = ${macroPrefix}_ALIGNED_ALLOC(${macroPrefix}_ALIGNMENT, ${macroPrefix}_ALIGNMENT * sizeof(size_t));`,
-    `${descriptor.indent}mgr->_instances._capacity = ${macroPrefix}_ALIGNMENT;`,
-    `${descriptor.indent}mgr->_instances._count = 0;`,
+    `${style.indent}mgr->_instances.idx = ${macroPrefix}_ALIGNED_ALLOC(${macroPrefix}_ALIGNMENT, ${macroPrefix}_ALIGNMENT * sizeof(size_t));`,
+    `${style.indent}mgr->_instances._capacity = ${macroPrefix}_ALIGNMENT;`,
+    `${style.indent}mgr->_instances._count = 0;`,
     '',
-    `${descriptor.indent}mgr->_available.idx = ${macroPrefix}_ALIGNED_ALLOC(${macroPrefix}_ALIGNMENT, ${macroPrefix}_ALIGNMENT * sizeof(size_t));`,
-    `${descriptor.indent}mgr->_available._capacity = ${macroPrefix}_ALIGNMENT;`,
-    `${descriptor.indent}mgr->_available._count = 0;`,
+    `${style.indent}mgr->_available.idx = ${macroPrefix}_ALIGNED_ALLOC(${macroPrefix}_ALIGNMENT, ${macroPrefix}_ALIGNMENT * sizeof(size_t));`,
+    `${style.indent}mgr->_available._capacity = ${macroPrefix}_ALIGNMENT;`,
+    `${style.indent}mgr->_available._count = 0;`,
     '',
-    `${descriptor.indent}return mgr;`,
+    `${style.indent}return mgr;`,
     '}',
     '',
     `void ${managerDestroyFunc}(${managerStruct}* mgr)`,
@@ -107,29 +107,29 @@ export function functionDefinitions(descriptor: Descriptor, formatter: Formatter
     descriptor.soaFields
       .sort()
       .map((soaField) => {
-        return `${descriptor.indent}${macroPrefix}_ALIGNED_FREE(mgr->${soaField.name});`;
+        return `${style.indent}${macroPrefix}_ALIGNED_FREE(mgr->${soaField.name});`;
       })
       .join('\n'),
     descriptor.soaFields
       .sort()
       .map((soaField) => {
-        return `${descriptor.indent}mgr->${soaField.name} = NULL;`;
+        return `${style.indent}mgr->${soaField.name} = NULL;`;
       })
       .join('\n'),
-    `${descriptor.indent}mgr->_count = 0;`,
-    `${descriptor.indent}mgr->_capacity = 0;`,
+    `${style.indent}mgr->_count = 0;`,
+    `${style.indent}mgr->_capacity = 0;`,
     '',
-    `${descriptor.indent}${macroPrefix}_ALIGNED_FREE(mgr->_instances.idx);`,
-    `${descriptor.indent}mgr->_instances.idx = NULL;`,
-    `${descriptor.indent}mgr->_instances._count = 0;`,
-    `${descriptor.indent}mgr->_instances._capacity = 0;`,
+    `${style.indent}${macroPrefix}_ALIGNED_FREE(mgr->_instances.idx);`,
+    `${style.indent}mgr->_instances.idx = NULL;`,
+    `${style.indent}mgr->_instances._count = 0;`,
+    `${style.indent}mgr->_instances._capacity = 0;`,
     '',
-    `${descriptor.indent}${macroPrefix}_ALIGNED_FREE(mgr->_available.idx);`,
-    `${descriptor.indent}mgr->_available.idx = NULL;`,
-    `${descriptor.indent}mgr->_available._count = 0;`,
-    `${descriptor.indent}mgr->_available._capacity = 0;`,
+    `${style.indent}${macroPrefix}_ALIGNED_FREE(mgr->_available.idx);`,
+    `${style.indent}mgr->_available.idx = NULL;`,
+    `${style.indent}mgr->_available._count = 0;`,
+    `${style.indent}mgr->_available._capacity = 0;`,
     '',
-    `${descriptor.indent}free(mgr);`,
+    `${style.indent}free(mgr);`,
     '}',
     ''
   ].join('\n');

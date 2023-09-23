@@ -1,82 +1,141 @@
 {
-  "$schema": "http://json-schema.org/draft-06/schema#",
-  "$ref": "#/definitions/Descriptor",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Descriptor",
+  "description": "The Descriptor contains all the information required to customize the custom structure of array.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "format": "uri-reference"
+    },
+    "author": {
+      "description": "The the author of the C struct name. If specified, the author will be added to the generated header comment block on top of the generated source file.",
+      "type": "string"
+    },
+    "description": {
+      "description": "The description of the C struct name. If specified, the description will be added to the generated header comment block on top of the generated source file.",
+      "type": "string"
+    },
+    "name": {
+      "description": "The struct-of-array structure's name. Please note that the naming convention specified by desciptor.style.struct will be applied automatically to the name.",
+      "type": "string"
+    },
+    "homepage": {
+      "description": "The url to the product homepage. If specified, the homepage will be added to the generated header comment block on top of the generated source file.",
+      "type": "string",
+      "format": "uri"
+    },
+    "license": {
+      "description": "It is highly recommend to specify a license for your package so that people know how they are permitted to use it, and any restrictions you're placing on it. If specified, the license will be added to the generated header comment block on top of the generated source file.",
+      "type": "string"
+    },
+    "outputPath": {
+      "description": "The path where to output the generated source file. Please note that it can be overriden by using the -o or --output-path command line option. If unspecified from neither descriptor.outputPath nor the command line option, soa-c will output the generated code content through the standard output.",
+      "type": "string"
+    },
+    "style": {
+      "description": "Style contains control properties to customize the output to match your desired coding standard.",
+      "$ref": "#/definitions/Style"
+    },
+    "headerIncludes": {
+      "description": "The list of includes to add to the code-generated header file.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Include"
+      }
+    },
+    "sourceIncludes": {
+      "description": "The list of includes to add to the code-generated source file.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Include"
+      }
+    },
+    "soaFields": {
+      "description": "The list of fields to generate into your Struct-of-Array structure.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/SOAField"
+      }
+    }
+  },
+  "required": ["$schema", "name", "soaFields"],
   "definitions": {
-    "Descriptor": {
+    "NamingConvention": {
+      "title": "NamingConvention",
+      "description": "Supported Naming Conventions.",
+      "type": "string",
+      "enum": ["camelCase", "snakeCase", "pascalCase", "screamingSnakeCase"]
+    },
+    "Style": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "$schema": {
-          "type": "string",
-          "format": "uri"
-        },
-        "name": {
-          "description": "the C struct name",
-          "type": "string"
-        },
-        "description": {
-          "description": "the description of the C struct name. This will be used when code-generating the comment if it is available.",
-          "type": "string"
-        },
-        "outputPath": {
-          "description": "the path where to output the generated code source and header files.",
-          "type": "string"
-        },
         "indent": {
           "description": "Intendation characters to use. For example, it can be a tab \"\\t\", or two spaces \"  \" or four spaces: \"    \", etc. Default is 4 spaces.",
           "type": "string",
           "default": "    "
         },
-        "author": {
-          "description": "the the author of the C struct name. This will be used when code-generating the comment if it is available.",
-          "type": "string"
-        },
-        "style": {
-          "description": "The generation format style of your choice",
+        "constant": {
+          "title": "NamingConvention",
+          "description": "The generation format style for the name of static constant variables. The Default is 'screamingSnakeCase'.",
           "type": "string",
-          "title": "EStyle",
-          "enum": ["camelCase", "snakeCase"],
+          "$ref": "#/definitions/NamingConvention",
+          "default": "screamingSnakeCase"
+        },
+        "function": {
+          "title": "NamingConvention",
+          "description": "The generation format style for the name of function prototypes and function definitions. The Default is 'camelCase'.",
+          "type": "string",
+          "$ref": "#/definitions/NamingConvention",
           "default": "camelCase"
         },
-        "headerIncludes": {
-          "description": "The list of includes to add to the code-generated header file.",
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/Include"
-          }
+        "global": {
+          "title": "NamingConvention",
+          "description": "The generation format style for the name of global variables. The Default is 'camelCase'.",
+          "type": "string",
+          "$ref": "#/definitions/NamingConvention",
+          "default": "camelCase"
         },
-        "sourceIncludes": {
-          "description": "The list of includes to add to the code-generated source file.",
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/Include"
-          }
+        "macroDefinition": {
+          "title": "NamingConvention",
+          "description": "The generation format style for the name of preprocessing macro value definitions. The Default is 'screamingSnakeCase'",
+          "type": "string",
+          "$ref": "#/definitions/NamingConvention",
+          "default": "screamingSnakeCase"
         },
-        "soaFields": {
-          "description": "The list of fields to generate into your SOA structure",
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/SOAField"
-          }
+        "macroFunction": {
+          "title": "NamingConvention",
+          "description": "The generation format style for the name of preprocessing macro function definitions. The Default is 'screamingSnakeCase'",
+          "type": "string",
+          "$ref": "#/definitions/NamingConvention",
+          "default": "screamingSnakeCase"
+        },
+        "struct": {
+          "title": "NamingConvention",
+          "description": "The generation format style for the name of struct types. The Default is 'pascalCase'",
+          "type": "string",
+          "$ref": "#/definitions/NamingConvention",
+          "default": "pascalCase"
         }
-      },
-      "required": ["name", "outputPath", "soaFields"]
+      }
     },
     "Include": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
         "fileName": {
-          "description": "The file name to include",
+          "description": "The file name to include.",
           "type": "string"
         },
         "isLocal": {
-          "description": "Setting this to true will use double quotes inclusion. Otherwise, it will use triangular brackets",
+          "description": "Setting this to true will use double quotes inclusion. Otherwise, it will use triangular brackets.",
           "type": "boolean",
           "default": false
         },
         "comment": {
-          "description": "Optional comment to describe what the file inclusion is for. It will generate a comment",
+          "description": "Optional comment to describe what the file inclusion is for. It will generate a comment.",
           "type": "string"
         }
       },
@@ -91,12 +150,22 @@
           "type": "string"
         },
         "comment": {
-          "description": "Optional comment to describe what the file inclusion is for. It will be added to the doxygen comment",
+          "description": "Optional comment to describe the field. It will be added to the generated comment block.",
           "type": "string"
         },
         "type": {
-          "description": "The type of the field to generate. It can be a built-in type such as int, float, or your own custom type",
+          "description": "The type of the field to generate. It can be a built-in type such as int, float, or your own custom type.",
           "type": "string"
+        },
+        "generateGetter": {
+          "description": "Generate a getter function. Default is 'true'.",
+          "type": "boolean",
+          "default": true
+        },
+        "generateSetter": {
+          "description": "Generate a mutator function. Default is 'true'.",
+          "type": "boolean",
+          "default": true
         }
       },
       "required": ["name", "type"]

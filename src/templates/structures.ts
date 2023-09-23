@@ -1,14 +1,14 @@
 import wrap from 'word-wrap';
 
 import { Descriptor } from '../descriptor';
-import { Formatter } from '../types';
+import { Style } from '../style';
 
-export default function structures(descriptor: Descriptor, formatter: Formatter): string {
-  const managerStruct = `${formatter(`${descriptor.name} manager`)}_t`;
-  const indexStruct = `${formatter(`${descriptor.name} index`)}_t`;
+export default function structures(descriptor: Descriptor, style: Style): string {
+  const managerStruct = style.struct(`${descriptor.name} manager`);
+  const indexStruct = style.struct(`${descriptor.name} index`);
 
-  const managerCreateFunc = formatter(`${descriptor.name} manager create`);
-  const managerDestroyFunc = formatter(`${descriptor.name} manager destroy`);
+  const managerCreateFunc = style.function(`${descriptor.name} manager create`);
+  const managerDestroyFunc = style.function(`${descriptor.name} manager destroy`);
 
   return [
     '/**',
@@ -16,15 +16,15 @@ export default function structures(descriptor: Descriptor, formatter: Formatter)
     ` */`,
     'typedef struct',
     '{',
-    `${descriptor.indent}size_t* idx;`,
-    `${descriptor.indent}size_t _capacity;`,
-    `${descriptor.indent}size_t _count;`,
+    `${style.indent}size_t* idx;`,
+    `${style.indent}size_t _capacity;`,
+    `${style.indent}size_t _count;`,
     `} ${indexStruct};`,
     '',
     '/**',
     wrap(
       `${descriptor.name} Manager. This structure contains all the data of every ${descriptor.name} instances in a structure-of-array form.`,
-      { indent: ' * ', width: 76 - (descriptor.indent ? descriptor.indent.length : 0) }
+      { indent: ' * ', width: 76 - (style.indent ? style.indent.length : 0) }
     ),
     ` * ${descriptor.name} Manager`,
     ` * @sa ${managerCreateFunc}`,
@@ -35,24 +35,24 @@ export default function structures(descriptor: Descriptor, formatter: Formatter)
     descriptor.soaFields
       .sort()
       .map((soaField) => {
-        return `${descriptor.indent}${soaField.type}* ${soaField.name};`;
+        return `${style.indent}${soaField.type}* ${soaField.name};`;
       })
       .join('\n'),
     '',
-    `${descriptor.indent}size_t _capacity;`,
-    `${descriptor.indent}size_t _count;`,
-    `${descriptor.indent}${indexStruct} _instances;`,
-    `${descriptor.indent}${indexStruct} _available;`,
+    `${style.indent}size_t _capacity;`,
+    `${style.indent}size_t _count;`,
+    `${style.indent}${indexStruct} _instances;`,
+    `${style.indent}${indexStruct} _available;`,
     `} ${managerStruct};`,
     '',
     '/**',
     ` * ${descriptor.name} instance.`,
-    ` * Instanticate using ${formatter(`${descriptor.name} create`)}()`,
-    ` * Destroy using ${formatter(`${descriptor.name} Destroy`)}()`,
+    ` * Instanticate using ${style.function(`${descriptor.name} create`)}()`,
+    ` * Destroy using ${style.function(`${descriptor.name} Destroy`)}()`,
     ' */',
     'typedef struct {',
-    `${descriptor.indent}${managerStruct} *mgr;`,
-    `${descriptor.indent}size_t idx;`,
+    `${style.indent}${managerStruct} *mgr;`,
+    `${style.indent}size_t idx;`,
     `} ${descriptor.name}_t;`
   ].join('\n');
 }

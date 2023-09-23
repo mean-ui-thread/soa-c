@@ -1,12 +1,12 @@
-import _ from 'lodash';
 import figlet from 'figlet';
 import wrap from 'word-wrap';
 
 import { Descriptor } from '../descriptor';
 import { Constants } from '../constants';
+import { Style } from '../style';
 
-export default function heading(descriptor: Descriptor): string {
-  const macroPrefix = _.toUpper(_.snakeCase(descriptor.name));
+export default function heading(descriptor: Descriptor, style: Style): string {
+  const macroPrefix = style.macroDefinition(descriptor.name);
 
   return [
     '/******************************************************************************',

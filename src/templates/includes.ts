@@ -1,6 +1,8 @@
 import { Descriptor } from '../descriptor';
+import { Style } from '../style';
 
-export function headerIncludes(descriptor: Descriptor): string {
+export function headerIncludes(descriptor: Descriptor, style: Style): string {
+  void style;
   return [
     '#include <stddef.h> /* size_t */',
     descriptor.headerIncludes
@@ -18,21 +20,21 @@ export function headerIncludes(descriptor: Descriptor): string {
   ].join('\n');
 }
 
-export function sourceIncludes(descriptor: Descriptor): string {
+export function sourceIncludes(descriptor: Descriptor, style: Style): string {
   return [
     '#include <assert.h>',
     '#if defined(__APPLE__)',
-    `${descriptor.indent}#include <malloc/malloc.h>`,
-    `${descriptor.indent}#include <stdalign.h>`,
-    `${descriptor.indent}#include <stdlib.h>`,
-    `${descriptor.indent}#include <string.h>`,
+    `${style.indent}#include <malloc/malloc.h>`,
+    `${style.indent}#include <stdalign.h>`,
+    `${style.indent}#include <stdlib.h>`,
+    `${style.indent}#include <string.h>`,
     '#elif defined(__linux__)',
-    `${descriptor.indent}#include <malloc.h>`,
-    `${descriptor.indent}#include <stdalign.h>`,
-    `${descriptor.indent}#include <stdlib.h>`,
-    `${descriptor.indent}#include <string.h>`,
+    `${style.indent}#include <malloc.h>`,
+    `${style.indent}#include <stdalign.h>`,
+    `${style.indent}#include <stdlib.h>`,
+    `${style.indent}#include <string.h>`,
     '#elif defined(_MSC_VER)',
-    `${descriptor.indent}#include <malloc.h>`,
+    `${style.indent}#include <malloc.h>`,
     '#endif',
     descriptor.sourceIncludes
       ? descriptor.sourceIncludes
