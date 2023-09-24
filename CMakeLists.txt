@@ -2,7 +2,8 @@ cmake_minimum_required(VERSION 3.13)
 project(sceneNode_example)
 
 add_library(${PROJECT_NAME} 
-    examples/sceneNode/sceneNode.c
+    examples/sceneNode/SceneNode.c
+    examples/sceneNode/SceneNode.h
 )
 
 if (MSVC)

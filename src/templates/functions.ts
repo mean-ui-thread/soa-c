@@ -1,135 +1,129 @@
-import _ from 'lodash';
-import { Descriptor } from '../descriptor';
 import { Style } from '../style';
 import wrap from 'word-wrap';
 
-export function functionPrototypes(descriptor: Descriptor, style: Style): string {
-  const managerStruct = style.struct(`${descriptor.name} manager`);
-  const managerCreateFunc = style.function(`${descriptor.name} manager create`);
-  const managerDestroyFunc = style.function(`${descriptor.name} manager destroy`);
-  const instanceCreateFunc = style.function(`${descriptor.name} create`);
-  const instanceDestroyFunc = style.function(`${descriptor.name} destroy`);
-
+export function functionPrototypes(style: Style): string {
   return [
     '/**',
-    ` * ${descriptor.name} manager create`,
+    ` * ${style.soaManagerStruct} Instance Allocator.`,
     wrap('Creates the SOA management structure instance behind the scene.', { indent: ' * ', width: 76 }),
-    ` * @sa ${managerDestroyFunc}`,
+    ` * @sa ${style.soaManagerDestroyFunc}`,
     ' */',
-    `${managerStruct}* ${managerCreateFunc}(void);`,
+    `${style.soaManagerStruct}* ${style.soaManagerCreateFunc}(void);`,
     '',
     '/**',
-    ` * ${descriptor.name} manager destroy`,
+    ` * ${style.soaManagerStruct} Instance Deallocation`,
     wrap('Destroys the SOA management structure instance behind the scene.', { indent: ' * ', width: 76 }),
-    ` * @sa ${managerCreateFunc}`,
+    ` * @sa ${style.soaManagerCreateFunc}`,
     ' */',
-    `void ${managerDestroyFunc}(${managerStruct} *mgr);`,
+    `void ${style.soaManagerDestroyFunc}(${style.soaManagerStruct} *mgr);`,
     '',
     '/**',
-    ` * ${descriptor.name} Instance Allocator.`,
-    wrap(`This function instantiates a new ${descriptor.name} instance`, { indent: ' * ', width: 76 }),
-    ` * @sa ${instanceDestroyFunc}`,
+    ` * ${style.soaStruct} Instance Allocator.`,
+    wrap(`This function instantiates a new ${style.soaStruct} instance.`, { indent: ' * ', width: 76 }),
+    ` * @sa ${style.soaDestroyFunc}`,
     ' */',
-    `${descriptor.name}_t ${instanceCreateFunc}(${managerStruct} *mgr);`,
+    `${style.soaStruct} ${style.soaCreateFunc}(${style.soaManagerStruct} *mgr);`,
     '',
     '/**',
-    ` * ${descriptor.name} Instance Deallocator.`,
-    wrap(`This function destroys a ${descriptor.name} instance`, { indent: ' * ', width: 76 }),
-    ` * @sa ${instanceCreateFunc}`,
+    ` * ${style.soaStruct} Instance Deallocation.`,
+    wrap(`This function destroys a ${style.soaStruct} instance.`, { indent: ' * ', width: 76 }),
+    ` * @sa ${style.soaCreateFunc}`,
     ' */',
-    `void ${instanceDestroyFunc}(${descriptor.name}_t instance);`,
+    `void ${style.soaDestroyFunc}(${style.soaStruct} instance);`,
     '',
-    descriptor.soaFields
-      .sort()
+    style.soaFields
       .map((soaField) => {
-        const soaGetterName = style.function(`${descriptor.name} get ${soaField.name}`);
-        const soaSetterName = style.function(`${descriptor.name} set ${soaField.name}`);
-        return (
-          `/**\n` +
-          ` * Getter for ${soaField.name}\n` +
-          (soaField.comment ? ` * ${soaField.comment}\n` : '') +
-          ` * @param instance the ${descriptor.name} instance\n` +
-          ` * @return The value of ${soaField.name}\n` +
-          ` * @sa ${soaSetterName}\n` +
-          ` */\n` +
-          `${soaField.type} ${soaGetterName}(${descriptor.name}_t instance);\n` +
-          '\n' +
-          `/**\n` +
-          ` * Setter for ${soaField.name}\n` +
-          (soaField.comment ? ` * ${soaField.comment}\n` : '') +
-          ` * @param instance the ${descriptor.name} instance\n` +
-          ` * @param ${soaField.name} The value of ${soaField.name}\n` +
-          ` * @sa ${soaGetterName}\n` +
-          ` */\n` +
-          `void ${soaSetterName}(${descriptor.name}_t instance, ${soaField.type} ${soaField.name});`
-        );
+        const comment = soaField.comment ? '\n' + wrap(soaField.comment, { indent: ' * ', width: 76 }) : '';
+        const seeAlsoGetter = soaField.getterFunc ? `\n * @sa ${soaField.getterFunc}` : '';
+        const seeAlsoSetter = soaField.setterFunc ? `\n * @sa ${soaField.setterFunc}` : '';
+
+        const getter = soaField.getterFunc
+          ? [
+              '/**',
+              ` * Getter for ${soaField.name}${comment}`,
+              ` * @param instance the ${style.soaStruct} instance.`,
+              ` * @return The value of ${soaField.name}${seeAlsoSetter}`,
+              ` */`,
+              `${soaField.type} ${soaField.getterFunc}(${style.soaStruct} instance);`,
+              ''
+            ]
+          : [];
+
+        const setter = soaField.getterFunc
+          ? [
+              `/**`,
+              ` * Setter for ${soaField.name}${comment}`,
+              ` * @param instance the ${style.soaStruct} instance.`,
+              ` * @return The value of ${soaField.name}${seeAlsoGetter}`,
+              ` */`,
+              `void ${soaField.setterFunc}(${style.soaStruct} instance, ${soaField.type} ${soaField.name});`,
+              ''
+            ]
+          : [];
+
+        return getter.concat(setter).join('\n');
       })
       .join('\n\n')
   ].join('\n');
 }
 
-export function functionDefinitions(descriptor: Descriptor, style: Style): string {
-  const macroPrefix = _.toUpper(_.snakeCase(descriptor.name));
-
-  const managerStruct = style.struct(`${descriptor.name} manager`);
-  const managerCreateFunc = style.function(`${descriptor.name} manager create`);
-  const managerDestroyFunc = style.function(`${descriptor.name} manager destroy`);
-  //const instanceCreateFunc = style.function(`${descriptor.name} create`);
-  //const instanceDestroyFunc = style.function(`${descriptor.name} destroy`);
-
+export function functionDefinitions(style: Style): string {
   return [
-    `${managerStruct}* ${managerCreateFunc}(void)`,
-    '{',
-    `${style.indent} ${managerStruct}* mgr = malloc(sizeof(${managerStruct}));`,
+    `${style.tab('')}${style.soaManagerStruct}* ${style.soaManagerCreateFunc}(void)`,
+    `${style.tab('')}{`,
+    `${style.tab(' ')}${style.soaManagerStruct}* mgr = malloc(sizeof(${style.soaManagerStruct}));`,
     '',
-    descriptor.soaFields
-      .sort()
+    style.soaFields
       .map((soaField) => {
-        return `${style.indent}mgr->${soaField.name} = ${macroPrefix}_ALIGNED_ALLOC(${macroPrefix}_ALIGNMENT, ${macroPrefix}_ALIGNMENT * sizeof(${soaField.type}));`;
+        return `${style.tab(' ')}mgr->${soaField.name} = ${style.macroAlignedAllocFunc}(${style.macroAlignmentDef}, ${
+          style.macroAlignmentDef
+        } * sizeof(${soaField.type}));`;
       })
       .join('\n'),
-    `${style.indent}mgr->_capacity = ${macroPrefix}_ALIGNMENT;`,
-    `${style.indent}mgr->_count = 0;`,
+    `${style.tab(' ')}mgr->_capacity = ${style.macroAlignmentDef};`,
+    `${style.tab(' ')}mgr->_count = 0;`,
     '',
-    `${style.indent}mgr->_instances.idx = ${macroPrefix}_ALIGNED_ALLOC(${macroPrefix}_ALIGNMENT, ${macroPrefix}_ALIGNMENT * sizeof(size_t));`,
-    `${style.indent}mgr->_instances._capacity = ${macroPrefix}_ALIGNMENT;`,
-    `${style.indent}mgr->_instances._count = 0;`,
+    `${style.tab(' ')}mgr->_instances.idx = ${style.macroAlignedAllocFunc}(${style.macroAlignmentDef}, ${
+      style.macroAlignmentDef
+    } * sizeof(size_t));`,
+    `${style.tab(' ')}mgr->_instances._capacity = ${style.macroAlignmentDef};`,
+    `${style.tab(' ')}mgr->_instances._count = 0;`,
     '',
-    `${style.indent}mgr->_available.idx = ${macroPrefix}_ALIGNED_ALLOC(${macroPrefix}_ALIGNMENT, ${macroPrefix}_ALIGNMENT * sizeof(size_t));`,
-    `${style.indent}mgr->_available._capacity = ${macroPrefix}_ALIGNMENT;`,
-    `${style.indent}mgr->_available._count = 0;`,
+    `${style.tab(' ')}mgr->_available.idx = ${style.macroAlignedAllocFunc}(${style.macroAlignmentDef}, ${
+      style.macroAlignmentDef
+    } * sizeof(size_t));`,
+    `${style.tab(' ')}mgr->_available._capacity = ${style.macroAlignmentDef};`,
+    `${style.tab(' ')}mgr->_available._count = 0;`,
     '',
-    `${style.indent}return mgr;`,
-    '}',
+    `${style.tab(' ')}return mgr;`,
+    `${style.tab('')}}`,
     '',
-    `void ${managerDestroyFunc}(${managerStruct}* mgr)`,
-    '{',
-    descriptor.soaFields
-      .sort()
+    `${style.tab('')}void ${style.soaManagerDestroyFunc}(${style.soaManagerStruct}* mgr)`,
+    `${style.tab('')}{`,
+    style.soaFields
       .map((soaField) => {
-        return `${style.indent}${macroPrefix}_ALIGNED_FREE(mgr->${soaField.name});`;
+        return `${style.tab(' ')}${style.macroAlignedFreeFunc}(mgr->${soaField.name});`;
       })
       .join('\n'),
-    descriptor.soaFields
-      .sort()
+    style.soaFields
       .map((soaField) => {
-        return `${style.indent}mgr->${soaField.name} = NULL;`;
+        return `${style.tab(' ')}mgr->${soaField.name} = NULL;`;
       })
       .join('\n'),
-    `${style.indent}mgr->_count = 0;`,
-    `${style.indent}mgr->_capacity = 0;`,
+    `${style.tab(' ')}mgr->_count = 0;`,
+    `${style.tab(' ')}mgr->_capacity = 0;`,
     '',
-    `${style.indent}${macroPrefix}_ALIGNED_FREE(mgr->_instances.idx);`,
-    `${style.indent}mgr->_instances.idx = NULL;`,
-    `${style.indent}mgr->_instances._count = 0;`,
-    `${style.indent}mgr->_instances._capacity = 0;`,
+    `${style.tab(' ')}${style.macroAlignedFreeFunc}(mgr->_instances.idx);`,
+    `${style.tab(' ')}mgr->_instances.idx = NULL;`,
+    `${style.tab(' ')}mgr->_instances._count = 0;`,
+    `${style.tab(' ')}mgr->_instances._capacity = 0;`,
     '',
-    `${style.indent}${macroPrefix}_ALIGNED_FREE(mgr->_available.idx);`,
-    `${style.indent}mgr->_available.idx = NULL;`,
-    `${style.indent}mgr->_available._count = 0;`,
-    `${style.indent}mgr->_available._capacity = 0;`,
+    `${style.tab(' ')}${style.macroAlignedFreeFunc}(mgr->_available.idx);`,
+    `${style.tab(' ')}mgr->_available.idx = NULL;`,
+    `${style.tab(' ')}mgr->_available._count = 0;`,
+    `${style.tab(' ')}mgr->_available._capacity = 0;`,
     '',
-    `${style.indent}free(mgr);`,
+    `${style.tab(' ')}free(mgr);`,
     '}',
     ''
   ].join('\n');

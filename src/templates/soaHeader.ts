@@ -1,4 +1,3 @@
-import { Descriptor } from '../descriptor';
 import { Style } from '../style';
 
 import definitions from './definitions';
@@ -7,47 +6,45 @@ import { headerIncludes, sourceIncludes } from './includes';
 import { functionPrototypes, functionDefinitions } from './functions';
 import structures from './structures';
 
-export default function soaHeader(descriptor: Descriptor, style: Style): string {
-  const macroPrefix = style.macroDefinition(descriptor.name);
-
+export default function soaHeader(style: Style): string {
   return [
-    heading(descriptor, style),
-    `#ifndef ${macroPrefix}_H`,
-    `#define ${macroPrefix}_H`,
+    heading(style),
+    `#ifndef ${style.macroHeaderGuardDef}`,
+    `#define ${style.macroHeaderGuardDef}`,
     '',
-    headerIncludes(descriptor, style),
-    '',
-    '#ifdef __cplusplus',
-    'extern "C" {',
-    '#endif',
-    '',
-    structures(descriptor, style),
-    '',
-    functionPrototypes(descriptor, style),
-    '',
-    '#ifdef __cplusplus',
-    '}',
-    '#endif',
-    '',
-    `#endif /* ${macroPrefix}_H */`,
-    '',
-    `#ifdef ${macroPrefix}_IMPLEMENTATION`,
-    '',
-    sourceIncludes(descriptor, style),
-    '',
-    definitions(descriptor, style),
+    headerIncludes(style),
     '',
     '#ifdef __cplusplus',
     'extern "C" {',
     '#endif',
     '',
-    functionDefinitions(descriptor, style),
+    structures(style),
+    '',
+    functionPrototypes(style),
     '',
     '#ifdef __cplusplus',
     '}',
     '#endif',
     '',
-    `#endif /* ${macroPrefix}_IMPLEMENTATION */`,
+    `#endif /* ${style.macroHeaderGuardDef} */`,
+    '',
+    `#ifdef ${style.macroImplGuardDef}`,
+    '',
+    sourceIncludes(style),
+    '',
+    definitions(style),
+    '',
+    '#ifdef __cplusplus',
+    'extern "C" {',
+    '#endif',
+    '',
+    functionDefinitions(style),
+    '',
+    '#ifdef __cplusplus',
+    '}',
+    '#endif',
+    '',
+    `#endif /* ${style.macroImplGuardDef} */`,
     ''
   ].join('\n');
 }

@@ -31,18 +31,25 @@ echo Generating 'src/constants.ts'
 cat << EOF > src/constants.ts
 ${HEADER}
 
-/* eslint-disable @typescript-eslint/no-extraneous-class */
+const AUTHOR: string = '$(node -p "require('./package.json').author")';
+const DESCRIPTION: string = '$(node -p "require('./package.json').description")';
+const HOMEPAGE: string = '$(node -p "require('./package.json').homepage")';
+const LICENSE: string = '$(node -p "require('./package.json').license")';
+const NAME: string = '$(node -p "require('./package.json').name")';
+const RELEASED_DATE: string = '$(node -p "(new Date()).toUTCString()")';
+const RELEASED_YEAR: number = $(node -p "(new Date()).getUTCFullYear()");
+const VERSION: string = '$(node -p "require('./package.json').version")';
 
-export class Constants {
-  static readonly AUTHOR: string = '$(node -p "require('./package.json').author")';
-  static readonly DESCRIPTION: string = '$(node -p "require('./package.json').description")';
-  static readonly HOMEPAGE: string = '$(node -p "require('./package.json').homepage")';
-  static readonly LICENSE: string = '$(node -p "require('./package.json').license")';
-  static readonly NAME: string = '$(node -p "require('./package.json').name")';
-  static readonly RELEASED_DATE: string = '$(node -p "(new Date()).toUTCString()")';
-  static readonly RELEASED_YEAR: number = $(node -p "(new Date()).getUTCFullYear()");
-  static readonly VERSION: string = '$(node -p "require('./package.json').version")';
-}
+export const Constants = {
+  AUTHOR,
+  DESCRIPTION,
+  HOMEPAGE,
+  LICENSE,
+  NAME,
+  RELEASED_DATE,
+  RELEASED_YEAR,
+  VERSION
+};
 EOF
 
 #######################################################################################################

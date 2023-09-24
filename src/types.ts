@@ -1,1 +1,1 @@
-export type FormatterFunction = (string: string) => string;
+export type FormatterFunction = (words: string[]) => string;

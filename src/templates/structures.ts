@@ -1,58 +1,54 @@
 import wrap from 'word-wrap';
 
-import { Descriptor } from '../descriptor';
 import { Style } from '../style';
 
-export default function structures(descriptor: Descriptor, style: Style): string {
-  const managerStruct = style.struct(`${descriptor.name} manager`);
-  const indexStruct = style.struct(`${descriptor.name} index`);
-
-  const managerCreateFunc = style.function(`${descriptor.name} manager create`);
-  const managerDestroyFunc = style.function(`${descriptor.name} manager destroy`);
+export default function structures(style: Style): string {
+  const opts = { indent: ' * ', width: 76 };
 
   return [
     '/**',
-    wrap(`${descriptor.name} Index. This is used to track instances.`, { indent: ' * ', width: 76 }),
+    wrap(`${style.soaStruct} Index Structure. This is used to track instances.`, opts),
     ` */`,
     'typedef struct',
     '{',
-    `${style.indent}size_t* idx;`,
-    `${style.indent}size_t _capacity;`,
-    `${style.indent}size_t _count;`,
-    `} ${indexStruct};`,
+    `${style.tab(' ')}size_t* idx;`,
+    `${style.tab(' ')}size_t _capacity;`,
+    `${style.tab(' ')}size_t _count;`,
+    `} ${style.soaIndexStruct};`,
     '',
     '/**',
     wrap(
-      `${descriptor.name} Manager. This structure contains all the data of every ${descriptor.name} instances in a structure-of-array form.`,
-      { indent: ' * ', width: 76 - (style.indent ? style.indent.length : 0) }
+      `${style.soaStruct} Manager Structure. This structure contains all the data of every ${style.soaStruct} instances in a structure-of-array form.`,
+      opts
     ),
-    ` * ${descriptor.name} Manager`,
-    ` * @sa ${managerCreateFunc}`,
-    ` * @sa ${managerDestroyFunc}`,
+    ` * ${style.soaStruct} Manager`,
+    ` * @sa ${style.soaCreateFunc}`,
+    ` * @sa ${style.soaDestroyFunc}`,
+    ` * @sa ${style.soaManagerCreateFunc}`,
+    ` * @sa ${style.soaManagerDestroyFunc}`,
     ` */`,
     'typedef struct',
     '{',
-    descriptor.soaFields
-      .sort()
+    style.soaFields
       .map((soaField) => {
-        return `${style.indent}${soaField.type}* ${soaField.name};`;
+        return `${style.tab(' ')}${soaField.type}* ${soaField.name};`;
       })
       .join('\n'),
     '',
-    `${style.indent}size_t _capacity;`,
-    `${style.indent}size_t _count;`,
-    `${style.indent}${indexStruct} _instances;`,
-    `${style.indent}${indexStruct} _available;`,
-    `} ${managerStruct};`,
+    `${style.tab(' ')}size_t _capacity;`,
+    `${style.tab(' ')}size_t _count;`,
+    `${style.tab(' ')}${style.soaIndexStruct} _instances;`,
+    `${style.tab(' ')}${style.soaIndexStruct} _available;`,
+    `} ${style.soaManagerStruct};`,
     '',
     '/**',
-    ` * ${descriptor.name} instance.`,
-    ` * Instanticate using ${style.function(`${descriptor.name} create`)}()`,
-    ` * Destroy using ${style.function(`${descriptor.name} Destroy`)}()`,
+    ` * ${style.soaStruct} instance.`,
+    ` * Instantiate using ${style.soaCreateFunc}`,
+    ` * Destroy using ${style.soaCreateFunc}`,
     ' */',
     'typedef struct {',
-    `${style.indent}${managerStruct} *mgr;`,
-    `${style.indent}size_t idx;`,
-    `} ${descriptor.name}_t;`
+    `${style.tab(' ')}${style.soaManagerStruct} *mgr;`,
+    `${style.tab(' ')}size_t idx;`,
+    `} ${style.soaStruct};`
   ].join('\n');
 }

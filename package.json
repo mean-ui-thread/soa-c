@@ -31,11 +31,11 @@
   "devDependencies": {
     "@tsconfig/node-lts": "^18.12.5",
     "@types/figlet": "^1.5.6",
-    "@types/lodash": "^4.14.197",
-    "@types/node": "^20.5.8",
-    "@typescript-eslint/eslint-plugin": "^6.5.0",
-    "@typescript-eslint/parser": "^6.5.0",
-    "eslint": "^8.48.0",
+    "@types/lodash": "^4.14.199",
+    "@types/node": "^20.6.5",
+    "@typescript-eslint/eslint-plugin": "^6.7.2",
+    "@typescript-eslint/parser": "^6.7.2",
+    "eslint": "^8.50.0",
     "husky": "^8.0.3",
     "lint-staged": "^14.0.1",
     "prettier": "^3.0.3",
@@ -46,6 +46,7 @@
     "chalk": "~4.1.2",
     "commander": "^11.0.0",
     "figlet": "^1.6.0",
+    "license": "^1.0.3",
     "lodash": "^4.17.21",
     "word-wrap": "^1.2.5"
   }

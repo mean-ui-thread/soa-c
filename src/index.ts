@@ -8,16 +8,16 @@ import { soa_c } from './soa_c';
 
 import { Constants } from './constants';
 
-function parseDescriptorFileArg(descriptorFilePath: PathLike) {
+function parseDescriptorFileArg(descriptorFilePath: PathLike): Descriptor {
   console.log(chalk.bold.green(`Loading ${descriptorFilePath} ...`));
 
   if (!existsSync(descriptorFilePath)) {
-    throw new InvalidArgumentError(`'${descriptorFilePath}' does not exist.`);
+    throw new InvalidArgumentError('File does not exist.');
   }
 
   const data = readFileSync(descriptorFilePath, 'utf-8').toString();
   if (data.length == 0) {
-    throw new InvalidArgumentError(`'${descriptorFilePath}' file is empty.`);
+    throw new InvalidArgumentError('File could not be read or is empty.');
   }
 
   try {
@@ -46,12 +46,9 @@ new Command()
   .argument('<descriptorFile>', 'JSON Descriptor file', parseDescriptorFileArg)
   .option(
     '-o, --output-path <outputPath>',
-    "The path where to output the generated source file. This also overrides the 'descriptor.outputPath' from the descriptor file if it was specified. If unspecified from neither descriptor.outputPath nor the command line option, soa-c will output the generated code content through the standard output."
+    "The path where to output the generated source file. This also overrides the 'descriptor.outputPath' from the descriptor file if specified."
   )
-  .action((descriptorFile: Descriptor, options) => {
-    if (options.outputPath) {
-      descriptorFile.outputPath = options.outputPath;
-    }
-    soa_c(descriptorFile);
-  })
+  .action((descriptorFile: Descriptor, options) =>
+    soa_c(descriptorFile, options.outputPath || descriptorFile.outputPath || '.')
+  )
   .parse(process.argv);

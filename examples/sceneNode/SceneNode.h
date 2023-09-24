@@ -1,5 +1,6 @@
 /******************************************************************************
- * This header file was code-generated on Tue, 19 Sep 2023 13:18:52 GMT, using:
+ * DO NOT EDIT!!! This header file was code-generated on Sun, 24 Sep 2023 
+ * 23:33:48 GMT, using:
  *
  * ███████╗ ██████╗  █████╗        ██████╗
  * ██╔════╝██╔═══██╗██╔══██╗      ██╔════╝
@@ -10,15 +11,14 @@
  * A CLI that generates Struct-of-Arrays (SOA) C code from a JSON descriptor 
  * file.
  *
- * By: Mean-UI-Thread - Copyright (c) 2023 - All rights reserved
+ * By: Mean-UI-Thread - Copyright (c) 2023 - All rights reserved.
  * https://github.com/mean-ui-thread/soa-c#readme
  *
  * ----------------------------------------------------------------------------
  *
- * sceneNode - A nestable structure that contains transformation properties of 
- * graphical and non-graphical elements. Building block of a scene tree.
- *
- * Author: Mean-UI-Thread
+ * SceneNode, by John Smith : A nestable structure that contains transformation 
+ * properties of graphical and non-graphical elements. Building block of a 
+ * scene tree.
  *
  * Before including this single-file header in *one* C or C++ file to create, 
  * do the following:
@@ -28,41 +28,68 @@
  *   #include ...
  *   #include ...
  *   #define SCENE_NODE_IMPLEMENTATION
- *   #include "sceneNode.h"
+ *   #include "SceneNode.h"
  *
- * Optionally, you can:
- *   - #define SCENE_NODE_ASSERT(x) before the #include to override the 
- *   default.
- *   - #define SCENE_NODE_MALLOC(x) before the #include to override the 
- *   default.
- *   - #define SCENE_NODE_REALLOC(x) before the #include to override the 
- *   default.
- *   - #define SCENE_NODE_FREE(x) before the #include to override the default.
+ * Optionally, you can define the following before including this header:
+ *   #define SCENE_NODE_ALIGNMENT ...
+ *   #define SCENE_NODE_ASSERT(condition) ...
+ *   #define SCENE_NODE_ALIGNED_ALLOC(align, ptr) ...
+ *   #define SCENE_NODE_ALIGNED_FREE(ptr) ...
+ *   #define SCENE_NODE_ALIGNED_REALLOC(ptr, align, ptr) ...
+ *   #define SCENE_NODE_MALLOC_USABLE_SIZE(ptr) ...
+ *   #define SCENE_NODE_IMPLEMENTATION
+ *   #include "SceneNode.h"
+ *
  *****************************************************************************/
+
+/******************************************************************************
+ * MIT License Copyright (c) 2023 John Smith
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy 
+ * of this software and associated documentation files (the "Software"), to 
+ * deal in the Software without restriction, including without limitation the 
+ * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or 
+ * sell copies of the Software, and to permit persons to whom the Software is 
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice (including the next 
+ * paragraph) shall be included in all copies or substantial portions of the 
+ * Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
+ * IN THE SOFTWARE.
+ *****************************************************************************/
+
 #ifndef SCENE_NODE_H
 #define SCENE_NODE_H
 
 #include <stddef.h> /* size_t */
-
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /**
- * sceneNode Index. This is used to track instances.
+ * SceneNode Index Structure. This is used to track instances.
  */
 typedef struct
 {
     size_t* idx;
     size_t _capacity;
     size_t _count;
-} sceneNodeIndex_t;
+} SceneNodeIndex;
 
 /**
- * sceneNode Manager. This structure contains all the data of every 
- * sceneNode instances in a structure-of-array form.
- * sceneNode Manager
+ * SceneNode Manager Structure. This structure contains all the data of every 
+ * SceneNode instances in a structure-of-array form.
+ * SceneNode Manager
+ * @sa sceneNodeCreate
+ * @sa sceneNodeDestroy
  * @sa sceneNodeManagerCreate
  * @sa sceneNodeManagerDestroy
  */
@@ -76,137 +103,142 @@ typedef struct
 
     size_t _capacity;
     size_t _count;
-    sceneNodeIndex_t _instances;
-    sceneNodeIndex_t _available;
-} sceneNodeManager_t;
+    SceneNodeIndex _instances;
+    SceneNodeIndex _available;
+} SceneNodeManager;
 
 /**
- * sceneNode instance.
- * Instanticate using sceneNodeCreate()
- * Destroy using sceneNodeDestroy()
+ * SceneNode instance.
+ * Instantiate using sceneNodeCreate
+ * Destroy using sceneNodeCreate
  */
 typedef struct {
-    sceneNodeManager_t *mgr;
+    SceneNodeManager *mgr;
     size_t idx;
-} sceneNode_t;
+} SceneNode;
 
 /**
- * sceneNode manager create
+ * SceneNodeManager Instance Allocator.
  * Creates the SOA management structure instance behind the scene.
  * @sa sceneNodeManagerDestroy
  */
-sceneNodeManager_t* sceneNodeManagerCreate(void);
+SceneNodeManager* sceneNodeManagerCreate(void);
 
 /**
- * sceneNode manager destroy
+ * SceneNodeManager Instance Deallocation
  * Destroys the SOA management structure instance behind the scene.
  * @sa sceneNodeManagerCreate
  */
-void sceneNodeManagerDestroy(sceneNodeManager_t *mgr);
+void sceneNodeManagerDestroy(SceneNodeManager *mgr);
 
 /**
- * sceneNode Instance Allocator.
- * This function instantiates a new sceneNode instance
+ * SceneNode Instance Allocator.
+ * This function instantiates a new SceneNode instance.
  * @sa sceneNodeDestroy
  */
-sceneNode_t sceneNodeCreate(sceneNodeManager_t *mgr);
+SceneNode sceneNodeCreate(SceneNodeManager *mgr);
 
 /**
- * sceneNode Instance Deallocator.
- * This function destroys a sceneNode instance
+ * SceneNode Instance Deallocation.
+ * This function destroys a SceneNode instance.
  * @sa sceneNodeCreate
  */
-void sceneNodeDestroy(sceneNode_t instance);
+void sceneNodeDestroy(SceneNode instance);
 
 /**
  * Getter for positionX
  * horizontal position of a scene node in pixel fragment unit
- * @param instance the sceneNode instance
+ * @param instance the SceneNode instance.
  * @return The value of positionX
  * @sa sceneNodeSetPositionX
  */
-float sceneNodeGetPositionX(sceneNode_t instance);
+float sceneNodeGetPositionX(SceneNode instance);
 
 /**
  * Setter for positionX
  * horizontal position of a scene node in pixel fragment unit
- * @param instance the sceneNode instance
- * @param positionX The value of positionX
+ * @param instance the SceneNode instance.
+ * @return The value of positionX
  * @sa sceneNodeGetPositionX
  */
-void sceneNodeSetPositionX(sceneNode_t instance, float positionX);
+void sceneNodeSetPositionX(SceneNode instance, float positionX);
+
 
 /**
  * Getter for positionY
  * vertical position of a scene node in pixel fragment unit
- * @param instance the sceneNode instance
+ * @param instance the SceneNode instance.
  * @return The value of positionY
  * @sa sceneNodeSetPositionY
  */
-float sceneNodeGetPositionY(sceneNode_t instance);
+float sceneNodeGetPositionY(SceneNode instance);
 
 /**
  * Setter for positionY
  * vertical position of a scene node in pixel fragment unit
- * @param instance the sceneNode instance
- * @param positionY The value of positionY
+ * @param instance the SceneNode instance.
+ * @return The value of positionY
  * @sa sceneNodeGetPositionY
  */
-void sceneNodeSetPositionY(sceneNode_t instance, float positionY);
+void sceneNodeSetPositionY(SceneNode instance, float positionY);
+
 
 /**
  * Getter for rotation
  * Z-rotation angle of a scene node in radians
- * @param instance the sceneNode instance
+ * @param instance the SceneNode instance.
  * @return The value of rotation
  * @sa sceneNodeSetRotation
  */
-float sceneNodeGetRotation(sceneNode_t instance);
+float sceneNodeGetRotation(SceneNode instance);
 
 /**
  * Setter for rotation
  * Z-rotation angle of a scene node in radians
- * @param instance the sceneNode instance
- * @param rotation The value of rotation
+ * @param instance the SceneNode instance.
+ * @return The value of rotation
  * @sa sceneNodeGetRotation
  */
-void sceneNodeSetRotation(sceneNode_t instance, float rotation);
+void sceneNodeSetRotation(SceneNode instance, float rotation);
+
 
 /**
  * Getter for scaleX
  * horizontal scaling of a scene node in multiplication factor
- * @param instance the sceneNode instance
+ * @param instance the SceneNode instance.
  * @return The value of scaleX
  * @sa sceneNodeSetScaleX
  */
-float sceneNodeGetScaleX(sceneNode_t instance);
+float sceneNodeGetScaleX(SceneNode instance);
 
 /**
  * Setter for scaleX
  * horizontal scaling of a scene node in multiplication factor
- * @param instance the sceneNode instance
- * @param scaleX The value of scaleX
+ * @param instance the SceneNode instance.
+ * @return The value of scaleX
  * @sa sceneNodeGetScaleX
  */
-void sceneNodeSetScaleX(sceneNode_t instance, float scaleX);
+void sceneNodeSetScaleX(SceneNode instance, float scaleX);
+
 
 /**
  * Getter for scaleY
  * vertical scaling of a scene node in multiplicaton factor
- * @param instance the sceneNode instance
+ * @param instance the SceneNode instance.
  * @return The value of scaleY
  * @sa sceneNodeSetScaleY
  */
-float sceneNodeGetScaleY(sceneNode_t instance);
+float sceneNodeGetScaleY(SceneNode instance);
 
 /**
  * Setter for scaleY
  * vertical scaling of a scene node in multiplicaton factor
- * @param instance the sceneNode instance
- * @param scaleY The value of scaleY
+ * @param instance the SceneNode instance.
+ * @return The value of scaleY
  * @sa sceneNodeGetScaleY
  */
-void sceneNodeSetScaleY(sceneNode_t instance, float scaleY);
+void sceneNodeSetScaleY(SceneNode instance, float scaleY);
+
 
 #ifdef __cplusplus
 }
@@ -230,7 +262,6 @@ void sceneNodeSetScaleY(sceneNode_t instance, float scaleY);
 #elif defined(_MSC_VER)
     #include <malloc.h>
 #endif
-
 
 #ifndef SCENE_NODE_ALIGNMENT
     #define SCENE_NODE_ALIGNMENT 64 /* Large enough for AVX-512 */
@@ -296,9 +327,9 @@ void sceneNodeSetScaleY(sceneNode_t instance, float scaleY);
 extern "C" {
 #endif
 
-sceneNodeManager_t* sceneNodeManagerCreate(void)
+SceneNodeManager* sceneNodeManagerCreate(void)
 {
-     sceneNodeManager_t* mgr = malloc(sizeof(sceneNodeManager_t));
+    SceneNodeManager* mgr = malloc(sizeof(SceneNodeManager));
 
     mgr->positionX = SCENE_NODE_ALIGNED_ALLOC(SCENE_NODE_ALIGNMENT, SCENE_NODE_ALIGNMENT * sizeof(float));
     mgr->positionY = SCENE_NODE_ALIGNED_ALLOC(SCENE_NODE_ALIGNMENT, SCENE_NODE_ALIGNMENT * sizeof(float));
@@ -319,7 +350,7 @@ sceneNodeManager_t* sceneNodeManagerCreate(void)
     return mgr;
 }
 
-void sceneNodeManagerDestroy(sceneNodeManager_t* mgr)
+void sceneNodeManagerDestroy(SceneNodeManager* mgr)
 {
     SCENE_NODE_ALIGNED_FREE(mgr->positionX);
     SCENE_NODE_ALIGNED_FREE(mgr->positionY);
