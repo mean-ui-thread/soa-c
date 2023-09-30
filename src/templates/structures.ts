@@ -7,23 +7,14 @@ export default function structures(style: Style): string {
 
   return [
     '/**',
-    wrap(`${style.soaStruct} Index Structure. This is used to track instances.`, opts),
-    ` */`,
-    'typedef struct',
-    '{',
-    `${style.tab(' ')}size_t* idx;`,
-    `${style.tab(' ')}size_t _capacity;`,
-    `${style.tab(' ')}size_t _count;`,
-    `} ${style.soaIndexStruct};`,
-    '',
-    '/**',
+    ` * @brief ${style.soaStruct} Manager Structure.`,
     wrap(
-      `${style.soaStruct} Manager Structure. This structure contains all the data of every ${style.soaStruct} instances in a structure-of-array form.`,
+      `This structure contains all the data of every ${style.soaStruct} instances in a structure-of-array form.`,
       opts
     ),
-    ` * ${style.soaStruct} Manager`,
     ` * @sa ${style.soaCreateFunc}`,
-    ` * @sa ${style.soaDestroyFunc}`,
+    ` * @sa ${style.soaGrabFunc}`,
+    ` * @sa ${style.soaDropFunc}`,
     ` * @sa ${style.soaManagerCreateFunc}`,
     ` * @sa ${style.soaManagerDestroyFunc}`,
     ` */`,
@@ -31,24 +22,32 @@ export default function structures(style: Style): string {
     '{',
     style.soaFields
       .map((soaField) => {
-        return `${style.tab(' ')}${soaField.type}* ${soaField.name};`;
+        const comment = soaField.comment ? ` /*!< ${soaField.comment} */` : '';
+        return style.tab(1, `${soaField.type}* ${soaField.name};${comment}`);
       })
       .join('\n'),
     '',
-    `${style.tab(' ')}size_t _capacity;`,
-    `${style.tab(' ')}size_t _count;`,
-    `${style.tab(' ')}${style.soaIndexStruct} _instances;`,
-    `${style.tab(' ')}${style.soaIndexStruct} _available;`,
+    style.tab(1, `size_t* _refCount; /*!<  Instance reference counter */`),
+    style.tab(1, `size_t* _indexToInstanceMap; /*!<  index to the instance map. */`),
+    style.tab(
+      1,
+      `size_t* _instanceToIndexMap; /*!<  instance map of the instance in the ${style.soaManagerStruct} to the index */`
+    ),
+    style.tab(
+      1,
+      `size_t _capacity; /*!<  Allocated capacity of the ${style.soaManagerStruct}. Will double in capacity when the limit has been reached. */`
+    ),
+    style.tab(1, `size_t _count; /*!<  amount of ${style.soaManagerStruct} in use */`),
     `} ${style.soaManagerStruct};`,
     '',
     '/**',
-    ` * ${style.soaStruct} instance.`,
-    ` * Instantiate using ${style.soaCreateFunc}`,
-    ` * Destroy using ${style.soaCreateFunc}`,
+    ` * @brief ${style.soaStruct} instance.`,
+    ` * @sa ${style.soaCreateFunc}`,
+    ` * @sa ${style.soaCreateFunc}`,
     ' */',
     'typedef struct {',
-    `${style.tab(' ')}${style.soaManagerStruct} *mgr;`,
-    `${style.tab(' ')}size_t idx;`,
+    style.tab(1, `${style.soaManagerStruct} *mgr; /* pointer to the ${style.soaManagerStruct} instance */`),
+    style.tab(1, 'size_t idx; /* index to the mgr->_indexToInstanceMap array */'),
     `} ${style.soaStruct};`
   ].join('\n');
 }

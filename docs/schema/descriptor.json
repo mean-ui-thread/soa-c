@@ -18,7 +18,7 @@
       "type": "string"
     },
     "name": {
-      "description": "The struct-of-array structure's name. Please note that the naming convention specified by desciptor.style.struct will be applied automatically to the name.",
+      "description": "The struct-of-array structure's name. Please note that the naming convention specified by descriptor.style.struct will be applied automatically to the name.",
       "type": "string"
     },
     "homepage": {
@@ -446,8 +446,9 @@
       ]
     },
     "outputPath": {
-      "description": "The path where to output the generated source file. Please note that it can be overriden by using the -o or --output-path command line option.",
-      "type": "string"
+      "description": "The path where to output the generated source file. Please note that it can be overridden by using the -o or --output-path command line option.",
+      "type": "string",
+      "default": "."
     },
     "style": {
       "description": "Style contains control properties to customize the output to match your desired coding standard.",
@@ -481,7 +482,7 @@
       "additionalProperties": false,
       "properties": {
         "indent": {
-          "description": "Intendation characters to use. For example, it can be a tab \"\\t\", or two spaces \"  \" or four spaces: \"    \", etc. Default is 4 spaces.",
+          "description": "Indentation characters to use. For example, it can be a tab \"\\t\", or two spaces \"  \" or four spaces: \"    \", etc. Default is 4 spaces.",
           "type": "string",
           "default": "    "
         },

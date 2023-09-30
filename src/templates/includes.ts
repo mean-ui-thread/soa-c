@@ -6,19 +6,19 @@ export function headerIncludes(style: Style): string {
 
 export function sourceIncludes(style: Style): string {
   return [
-    `${style.tab('')}#include <assert.h>`,
-    `${style.tab('')}#if defined(__APPLE__)`,
-    `${style.tab(' ')}#include <malloc/malloc.h>`,
-    `${style.tab(' ')}#include <stdalign.h>`,
-    `${style.tab(' ')}#include <stdlib.h>`,
-    `${style.tab(' ')}#include <string.h>`,
-    `${style.tab('')}#elif defined(__linux__)`,
-    `${style.tab(' ')}#include <malloc.h>`,
-    `${style.tab(' ')}#include <stdalign.h>`,
-    `${style.tab(' ')}#include <stdlib.h>`,
-    `${style.tab(' ')}#include <string.h>`,
-    `${style.tab('')}#elif defined(_MSC_VER)`,
-    `${style.tab(' ')}#include <malloc.h>`,
-    `${style.tab('')}#endif`
+    '#include <assert.h>',
+    '#if defined(__APPLE__)',
+    style.tab(1, '#include <malloc/malloc.h>'),
+    style.tab(1, '#include <stdalign.h>'),
+    style.tab(1, '#include <stdlib.h>'),
+    style.tab(1, '#include <string.h>'),
+    '#elif defined(__linux__)',
+    style.tab(1, '#include <malloc.h>'),
+    style.tab(1, '#include <stdalign.h>'),
+    style.tab(1, '#include <stdlib.h>'),
+    style.tab(1, '#include <string.h>'),
+    '#elif defined(_MSC_VER)',
+    style.tab(1, '#include <malloc.h>'),
+    '#endif'
   ].join('\n');
 }

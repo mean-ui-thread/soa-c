@@ -4,6 +4,7 @@ import { Command, InvalidArgumentError } from 'commander';
 import { PathLike, existsSync, readFileSync } from 'fs';
 
 import { Convert, Descriptor } from './descriptor';
+import * as descriptorSchema from './schema/descriptor.json';
 import { soa_c } from './soa_c';
 
 import { Constants } from './constants';
@@ -15,14 +16,14 @@ function parseDescriptorFileArg(descriptorFilePath: PathLike): Descriptor {
     throw new InvalidArgumentError('File does not exist.');
   }
 
-  const data = readFileSync(descriptorFilePath, 'utf-8').toString();
-  if (data.length == 0) {
+  const descriptorData = readFileSync(descriptorFilePath, 'utf-8').toString();
+  if (descriptorData.length == 0) {
     throw new InvalidArgumentError('File could not be read or is empty.');
   }
 
   try {
-    const result: Descriptor = Convert.toDescriptor(data);
-    return result;
+    const descriptor: Descriptor = Convert.toDescriptor(descriptorData);
+    return descriptor;
   } catch (err) {
     throw new InvalidArgumentError(`${err}`);
   }
@@ -44,11 +45,9 @@ new Command()
   )
   .showHelpAfterError(chalk.yellow('(add --help for additional information)'))
   .argument('<descriptorFile>', 'JSON Descriptor file', parseDescriptorFileArg)
-  .option(
-    '-o, --output-path <outputPath>',
-    "The path where to output the generated source file. This also overrides the 'descriptor.outputPath' from the descriptor file if specified."
-  )
-  .action((descriptorFile: Descriptor, options) =>
-    soa_c(descriptorFile, options.outputPath || descriptorFile.outputPath || '.')
-  )
+  .option('-o, --output-path <outputPath>', descriptorSchema.properties.outputPath.description)
+  .action((descriptor: Descriptor, options) => {
+    descriptor.outputPath = options.outputPath ?? descriptor.outputPath;
+    soa_c(descriptor);
+  })
   .parse(process.argv);

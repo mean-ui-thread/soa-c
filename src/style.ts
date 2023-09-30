@@ -54,9 +54,8 @@ export class Style {
 
   public readonly soaStruct: string;
   public readonly soaCreateFunc: string;
-  public readonly soaDestroyFunc: string;
-
-  public readonly soaIndexStruct: string;
+  public readonly soaGrabFunc: string;
+  public readonly soaDropFunc: string;
 
   public readonly soaManagerStruct: string;
   public readonly soaManagerCreateFunc: string;
@@ -119,9 +118,8 @@ export class Style {
 
     this.soaStruct = this.createStruct([this.id]);
     this.soaCreateFunc = this.createFunction([this.id, 'create']);
-    this.soaDestroyFunc = this.createFunction([this.id, 'destroy']);
-
-    this.soaIndexStruct = this.createStruct([this.id, 'index']);
+    this.soaGrabFunc = this.createFunction([this.id, 'grab']);
+    this.soaDropFunc = this.createFunction([this.id, 'drop']);
 
     this.soaManagerStruct = this.createStruct([this.id, 'manager']);
     this.soaManagerCreateFunc = this.createFunction([this.id, 'manager', 'create']);
@@ -130,7 +128,7 @@ export class Style {
     this._indent = descriptor.style?.indent ?? '    ';
   }
 
-  public tab(spaces: string): string {
-    return this._indent.repeat(spaces.length);
+  public tab(tabCount: number, line: string): string {
+    return `${this._indent.repeat(tabCount)}${line}`;
   }
 }

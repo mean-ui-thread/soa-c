@@ -8,9 +8,9 @@
     "soa-c": "./dist/index.js"
   },
   "scripts": {
-    "test": "./bin/soa-c examples/scene_node.json",
+    "test": "node bin/soa-c examples/sceneNode.json && cmake --preset default && cmake --build --preset default",
     "clean": "tsc --build --clean",
-    "prebuild": "./scripts/prebuild.sh",
+    "prebuild": "bash scripts/prebuild.sh",
     "build": "tsc",
     "lint": "eslint --fix src/",
     "format": "prettier --write **/*.ts **/*.json **/*.md",

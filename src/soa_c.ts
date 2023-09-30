@@ -1,13 +1,16 @@
-import { existsSync, mkdirSync, writeFileSync } from 'fs';
+import { existsSync, mkdirSync, PathLike, writeFileSync } from 'fs';
 
 import chalk from 'chalk';
 
 import { Descriptor } from './descriptor';
+import * as descriptorSchema from './schema/descriptor.json';
 import { Style } from './style';
 import createSoaHeader from './templates/soaHeader';
 
-export function soa_c(descriptor: Descriptor, outputPath: string) {
+export function soa_c(descriptor: Descriptor) {
   const style: Style = new Style(descriptor);
+
+  const outputPath: PathLike = descriptor.outputPath ?? descriptorSchema.properties.outputPath.default;
 
   const headerFileContent = createSoaHeader(style);
   const headerFilePath = `${outputPath}/${style.soaStruct}.h`;

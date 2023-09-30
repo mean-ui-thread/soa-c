@@ -4,32 +4,42 @@ import wrap from 'word-wrap';
 export function functionPrototypes(style: Style): string {
   return [
     '/**',
-    ` * ${style.soaManagerStruct} Instance Allocator.`,
+    ` * @brief ${style.soaManagerStruct} Instance Allocator.`,
     wrap('Creates the SOA management structure instance behind the scene.', { indent: ' * ', width: 76 }),
     ` * @sa ${style.soaManagerDestroyFunc}`,
     ' */',
     `${style.soaManagerStruct}* ${style.soaManagerCreateFunc}(void);`,
     '',
     '/**',
-    ` * ${style.soaManagerStruct} Instance Deallocation`,
+    ` * @brief ${style.soaManagerStruct} Instance Deallocation`,
     wrap('Destroys the SOA management structure instance behind the scene.', { indent: ' * ', width: 76 }),
     ` * @sa ${style.soaManagerCreateFunc}`,
     ' */',
     `void ${style.soaManagerDestroyFunc}(${style.soaManagerStruct} *mgr);`,
     '',
     '/**',
-    ` * ${style.soaStruct} Instance Allocator.`,
+    ` * @brief ${style.soaStruct} Instance Allocator.`,
     wrap(`This function instantiates a new ${style.soaStruct} instance.`, { indent: ' * ', width: 76 }),
-    ` * @sa ${style.soaDestroyFunc}`,
+    ` * @sa ${style.soaGrabFunc}`,
+    ` * @sa ${style.soaDropFunc}`,
     ' */',
     `${style.soaStruct} ${style.soaCreateFunc}(${style.soaManagerStruct} *mgr);`,
     '',
     '/**',
-    ` * ${style.soaStruct} Instance Deallocation.`,
-    wrap(`This function destroys a ${style.soaStruct} instance.`, { indent: ' * ', width: 76 }),
-    ` * @sa ${style.soaCreateFunc}`,
+    ` * @brief Increments ${style.soaStruct} Instance Reference Count.`,
+    ` * @sa ${style.soaDropFunc}`,
     ' */',
-    `void ${style.soaDestroyFunc}(${style.soaStruct} instance);`,
+    `void ${style.soaGrabFunc}(${style.soaStruct} instance);`,
+    '',
+    '/**',
+    ` * @brief Decrements ${style.soaStruct} Instance Reference Count.`,
+    wrap(`If the reference count reaches 0, the ${style.soaStruct} instance will be destroyed.`, {
+      indent: ' * ',
+      width: 76
+    }),
+    ` * @sa ${style.soaGrabFunc}`,
+    ' */',
+    `void ${style.soaDropFunc}(${style.soaStruct} instance);`,
     '',
     style.soaFields
       .map((soaField) => {
@@ -40,7 +50,7 @@ export function functionPrototypes(style: Style): string {
         const getter = soaField.getterFunc
           ? [
               '/**',
-              ` * Getter for ${soaField.name}${comment}`,
+              ` * @brief Getter for ${soaField.name}${comment}`,
               ` * @param instance the ${style.soaStruct} instance.`,
               ` * @return The value of ${soaField.name}${seeAlsoSetter}`,
               ` */`,
@@ -52,7 +62,7 @@ export function functionPrototypes(style: Style): string {
         const setter = soaField.getterFunc
           ? [
               `/**`,
-              ` * Setter for ${soaField.name}${comment}`,
+              ` * @brief Setter for ${soaField.name}${comment}`,
               ` * @param instance the ${style.soaStruct} instance.`,
               ` * @return The value of ${soaField.name}${seeAlsoGetter}`,
               ` */`,
@@ -69,61 +79,59 @@ export function functionPrototypes(style: Style): string {
 
 export function functionDefinitions(style: Style): string {
   return [
-    `${style.tab('')}${style.soaManagerStruct}* ${style.soaManagerCreateFunc}(void)`,
-    `${style.tab('')}{`,
-    `${style.tab(' ')}${style.soaManagerStruct}* mgr = malloc(sizeof(${style.soaManagerStruct}));`,
+    `${style.soaManagerStruct}* ${style.soaManagerCreateFunc}(void)`,
+    '{',
+    style.tab(1, `${style.soaManagerStruct}* mgr = malloc(sizeof(${style.soaManagerStruct}));`),
     '',
     style.soaFields
       .map((soaField) => {
-        return `${style.tab(' ')}mgr->${soaField.name} = ${style.macroAlignedAllocFunc}(${style.macroAlignmentDef}, ${
-          style.macroAlignmentDef
-        } * sizeof(${soaField.type}));`;
+        return style.tab(
+          1,
+          `mgr->${soaField.name} = ${style.macroAlignedAllocFunc}(${style.macroAlignmentDef}, ${style.macroAlignmentDef} * sizeof(${soaField.type}));`
+        );
       })
       .join('\n'),
-    `${style.tab(' ')}mgr->_capacity = ${style.macroAlignmentDef};`,
-    `${style.tab(' ')}mgr->_count = 0;`,
+    style.tab(
+      1,
+      `mgr->_refCount = ${style.macroAlignedAllocFunc}(${style.macroAlignmentDef}, ${style.macroAlignmentDef} * sizeof(size_t));`
+    ),
+    style.tab(
+      1,
+      `mgr->_indexToInstanceMap = ${style.macroAlignedAllocFunc}(${style.macroAlignmentDef}, ${style.macroAlignmentDef} * sizeof(size_t));`
+    ),
+    style.tab(
+      1,
+      `mgr->_instanceToIndexMap = ${style.macroAlignedAllocFunc}(${style.macroAlignmentDef}, ${style.macroAlignmentDef} * sizeof(size_t));`
+    ),
+    style.tab(1, `mgr->_capacity = ${style.macroAlignmentDef};`),
+    style.tab(1, `mgr->_count = 0;`),
     '',
-    `${style.tab(' ')}mgr->_instances.idx = ${style.macroAlignedAllocFunc}(${style.macroAlignmentDef}, ${
-      style.macroAlignmentDef
-    } * sizeof(size_t));`,
-    `${style.tab(' ')}mgr->_instances._capacity = ${style.macroAlignmentDef};`,
-    `${style.tab(' ')}mgr->_instances._count = 0;`,
+    style.tab(1, `return mgr;`),
+    '}',
     '',
-    `${style.tab(' ')}mgr->_available.idx = ${style.macroAlignedAllocFunc}(${style.macroAlignmentDef}, ${
-      style.macroAlignmentDef
-    } * sizeof(size_t));`,
-    `${style.tab(' ')}mgr->_available._capacity = ${style.macroAlignmentDef};`,
-    `${style.tab(' ')}mgr->_available._count = 0;`,
-    '',
-    `${style.tab(' ')}return mgr;`,
-    `${style.tab('')}}`,
-    '',
-    `${style.tab('')}void ${style.soaManagerDestroyFunc}(${style.soaManagerStruct}* mgr)`,
-    `${style.tab('')}{`,
+    `void ${style.soaManagerDestroyFunc}(${style.soaManagerStruct}* mgr)`,
+    '{',
     style.soaFields
       .map((soaField) => {
-        return `${style.tab(' ')}${style.macroAlignedFreeFunc}(mgr->${soaField.name});`;
+        return style.tab(1, `${style.macroAlignedFreeFunc}(mgr->${soaField.name});`);
       })
       .join('\n'),
+    style.tab(1, `${style.macroAlignedFreeFunc}(mgr->_refCount);`),
+    style.tab(1, `${style.macroAlignedFreeFunc}(mgr->_indexToInstanceMap);`),
+    style.tab(1, `${style.macroAlignedFreeFunc}(mgr->_instanceToIndexMap);`),
+    '',
     style.soaFields
       .map((soaField) => {
-        return `${style.tab(' ')}mgr->${soaField.name} = NULL;`;
+        return style.tab(1, `mgr->${soaField.name} = NULL;`);
       })
       .join('\n'),
-    `${style.tab(' ')}mgr->_count = 0;`,
-    `${style.tab(' ')}mgr->_capacity = 0;`,
+    style.tab(1, `mgr->_refCount = NULL;`),
+    style.tab(1, `mgr->_indexToInstanceMap = NULL;`),
+    style.tab(1, `mgr->_instanceToIndexMap = NULL;`),
+    style.tab(1, `mgr->_count = 0;`),
+    style.tab(1, `mgr->_capacity = 0;`),
     '',
-    `${style.tab(' ')}${style.macroAlignedFreeFunc}(mgr->_instances.idx);`,
-    `${style.tab(' ')}mgr->_instances.idx = NULL;`,
-    `${style.tab(' ')}mgr->_instances._count = 0;`,
-    `${style.tab(' ')}mgr->_instances._capacity = 0;`,
-    '',
-    `${style.tab(' ')}${style.macroAlignedFreeFunc}(mgr->_available.idx);`,
-    `${style.tab(' ')}mgr->_available.idx = NULL;`,
-    `${style.tab(' ')}mgr->_available._count = 0;`,
-    `${style.tab(' ')}mgr->_available._capacity = 0;`,
-    '',
-    `${style.tab(' ')}free(mgr);`,
+    style.tab(1, `free(mgr);`),
     '}',
     ''
   ].join('\n');

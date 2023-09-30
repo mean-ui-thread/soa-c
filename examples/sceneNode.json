@@ -9,27 +9,27 @@
     {
       "name": "position_x",
       "type": "float",
-      "comment": "horizontal position of a scene node in pixel fragment unit"
+      "comment": "Horizontal position of a scene node in pixel fragment unit."
     },
     {
       "name": "position_y",
       "type": "float",
-      "comment": "vertical position of a scene node in pixel fragment unit"
+      "comment": "Vertical position of a scene node in pixel fragment unit."
     },
     {
       "name": "rotation",
       "type": "float",
-      "comment": "Z-rotation angle of a scene node in radians"
+      "comment": "Z-rotation angle of a scene node in radians."
     },
     {
       "name": "scale_x",
       "type": "float",
-      "comment": "horizontal scaling of a scene node in multiplication factor"
+      "comment": "Horizontal scaling of a scene node in multiplication factor."
     },
     {
       "name": "scale_y",
       "type": "float",
-      "comment": "vertical scaling of a scene node in multiplicaton factor"
+      "comment": "Vertical scaling of a scene node in multiplication factor."
     }
   ]
 }
