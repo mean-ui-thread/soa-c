@@ -1,2 +1,4 @@
-# Compiled artefacts
-dist/*
+build/
+dist/
+node_modules/
+scripts/

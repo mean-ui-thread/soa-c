@@ -26,5 +26,5 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
   },
-  "cSpell.words": ["cplusplus", "realloc", "stdalign", "stddef"]
+  "cSpell.words": ["cplusplus", "quicktype", "realloc", "stdalign", "stddef"]
 }

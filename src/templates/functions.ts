@@ -84,12 +84,12 @@ export function functionDefinitions(style: Style): string {
     style.tab(1, `${style.soaManagerStruct}* mgr = malloc(sizeof(${style.soaManagerStruct}));`),
     '',
     style.soaFields
-      .map((soaField) => {
-        return style.tab(
+      .map((soaField) =>
+        style.tab(
           1,
           `mgr->${soaField.name} = ${style.macroAlignedAllocFunc}(${style.macroAlignmentDef}, ${style.macroAlignmentDef} * sizeof(${soaField.type}));`
-        );
-      })
+        )
+      )
       .join('\n'),
     style.tab(
       1,
@@ -111,20 +111,12 @@ export function functionDefinitions(style: Style): string {
     '',
     `void ${style.soaManagerDestroyFunc}(${style.soaManagerStruct}* mgr)`,
     '{',
-    style.soaFields
-      .map((soaField) => {
-        return style.tab(1, `${style.macroAlignedFreeFunc}(mgr->${soaField.name});`);
-      })
-      .join('\n'),
+    style.soaFields.map((soaField) => style.tab(1, `${style.macroAlignedFreeFunc}(mgr->${soaField.name});`)).join('\n'),
     style.tab(1, `${style.macroAlignedFreeFunc}(mgr->_refCount);`),
     style.tab(1, `${style.macroAlignedFreeFunc}(mgr->_indexToInstanceMap);`),
     style.tab(1, `${style.macroAlignedFreeFunc}(mgr->_instanceToIndexMap);`),
     '',
-    style.soaFields
-      .map((soaField) => {
-        return style.tab(1, `mgr->${soaField.name} = NULL;`);
-      })
-      .join('\n'),
+    style.soaFields.map((soaField) => style.tab(1, `mgr->${soaField.name} = NULL;`)).join('\n'),
     style.tab(1, `mgr->_refCount = NULL;`),
     style.tab(1, `mgr->_indexToInstanceMap = NULL;`),
     style.tab(1, `mgr->_instanceToIndexMap = NULL;`),

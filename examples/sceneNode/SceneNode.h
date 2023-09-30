@@ -4,11 +4,11 @@
  *
  * ███████╗ ██████╗  █████╗        ██████╗
  * ██╔════╝██╔═══██╗██╔══██╗      ██╔════╝
- * ███████╗██║   ██║███████║█████╗██║     
- * ╚════██║██║   ██║██╔══██║╚════╝██║     
+ * ███████╗██║   ██║███████║█████╗██║
+ * ╚════██║██║   ██║██╔══██║╚════╝██║
  * ███████║╚██████╔╝██║  ██║      ╚██████╗
  * ╚══════╝ ╚═════╝ ╚═╝  ╚═╝       ╚═════╝ v0.0.1
- * A CLI that generates Struct-of-Arrays (SOA) C code from a JSON descriptor 
+ * A CLI that generates Struct-of-Arrays (SOA) C code from a JSON descriptor
  * file.
  *
  * By: Mean-UI-Thread - Copyright (c) 2023 - All rights reserved.
@@ -16,11 +16,11 @@
  *
  * ----------------------------------------------------------------------------
  *
- * SceneNode, by John Smith : A nestable structure that contains transformation 
- * properties of graphical and non-graphical elements. Building block of a 
+ * SceneNode, by John Smith : A nestable structure that contains transformation
+ * properties of graphical and non-graphical elements. Building block of a
  * scene tree.
  *
- * Before including this single-file header in *one* C or C++ file to create, 
+ * Before including this single-file header in *one* C or C++ file to create,
  * do the following:
  *   #define SCENE_NODE_IMPLEMENTATION
  *
@@ -44,24 +44,24 @@
 
 /******************************************************************************
  * MIT License Copyright (c) 2023 John Smith
- * 
- * Permission is hereby granted, free of charge, to any person obtaining a copy 
- * of this software and associated documentation files (the "Software"), to 
- * deal in the Software without restriction, including without limitation the 
- * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or 
- * sell copies of the Software, and to permit persons to whom the Software is 
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to
+ * deal in the Software without restriction, including without limitation the
+ * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+ * sell copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
- * The above copyright notice and this permission notice (including the next 
- * paragraph) shall be included in all copies or substantial portions of the 
+ *
+ * The above copyright notice and this permission notice (including the next
+ * paragraph) shall be included in all copies or substantial portions of the
  * Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  *****************************************************************************/
 
@@ -76,7 +76,7 @@ extern "C" {
 
 /**
  * @brief SceneNode Manager Structure.
- * This structure contains all the data of every SceneNode instances in a 
+ * This structure contains all the data of every SceneNode instances in a
  * structure-of-array form.
  * @sa sceneNodeCreate
  * @sa sceneNodeGrab

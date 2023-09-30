@@ -1,2 +1,6 @@
 # Symbolic link file
 src/schema/descriptor.json
+
+build/
+dist/
+node_modules/
