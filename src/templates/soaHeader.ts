@@ -1,6 +1,6 @@
 import { Style } from '../style';
 
-import definitions from './definitions';
+import { headerDefinitions, sourceDefinitions } from './definitions';
 import heading from './heading';
 import { headerIncludes, sourceIncludes } from './includes';
 import { functionPrototypes, functionDefinitions } from './functions';
@@ -13,6 +13,8 @@ export default function soaHeader(style: Style): string {
     `#define ${style.macroHeaderGuardDef}`,
     '',
     headerIncludes(style),
+    '',
+    headerDefinitions(style),
     '',
     '#ifdef __cplusplus',
     'extern "C" {',
@@ -32,7 +34,7 @@ export default function soaHeader(style: Style): string {
     '',
     sourceIncludes(style),
     '',
-    definitions(style),
+    sourceDefinitions(style),
     '',
     '#ifdef __cplusplus',
     'extern "C" {',

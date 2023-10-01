@@ -30,9 +30,9 @@ ${HEADER}
 /* eslint-disable @typescript-eslint/no-extraneous-class */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
-$(npx quicktype --lang ts --src-lang schema docs/schema/descriptor.json --nice-property-names)
+$(pnpm exec quicktype --lang ts --src-lang schema docs/schema/descriptor.json --nice-property-names)
 EOF
-npx eslint --fix src/descriptor.ts
+pnpm exec eslint --fix src/descriptor.ts
 
 #######################################################################################################
 
@@ -42,7 +42,7 @@ ${HEADER}
 
 $(node ${SCRIPT_DIR}/genConstants.js)
 EOF
-npx eslint --fix src/constants.ts
+pnpm exec eslint --fix src/constants.ts
 
 #######################################################################################################
 

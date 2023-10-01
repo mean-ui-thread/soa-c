@@ -27,17 +27,11 @@ export default function structures(style: Style): string {
       })
       .join('\n'),
     '',
-    style.tab(1, `size_t* _refCount; /*!<  Instance reference counter */`),
-    style.tab(1, `size_t* _indexToInstanceMap; /*!<  index to the instance map. */`),
     style.tab(
       1,
-      `size_t* _instanceToIndexMap; /*!<  instance map of the instance in the ${style.soaManagerStruct} to the index */`
+      `size_t ${style._capacityVar}; /*!<  Allocated capacity of the ${style.soaManagerStruct}. Will double in capacity when the limit has been reached. */`
     ),
-    style.tab(
-      1,
-      `size_t _capacity; /*!<  Allocated capacity of the ${style.soaManagerStruct}. Will double in capacity when the limit has been reached. */`
-    ),
-    style.tab(1, `size_t _count; /*!<  amount of ${style.soaManagerStruct} in use */`),
+    style.tab(1, `size_t  ${style._countVar}; /*!<  amount of ${style.soaManagerStruct} in use */`),
     `} ${style.soaManagerStruct};`,
     '',
     '/**',
@@ -46,8 +40,11 @@ export default function structures(style: Style): string {
     ` * @sa ${style.soaCreateFunc}`,
     ' */',
     'typedef struct {',
-    style.tab(1, `${style.soaManagerStruct} *mgr; /* pointer to the ${style.soaManagerStruct} instance */`),
-    style.tab(1, 'size_t idx; /* index to the mgr->_indexToInstanceMap array */'),
+    style.tab(
+      1,
+      `${style.soaManagerStruct} *${style.soaManagerVar}; /* pointer to the ${style.soaManagerStruct} instance */`
+    ),
+    style.tab(1, `size_t ${style.instanceIndexVar}; /* index to the instance map */`),
     `} ${style.soaStruct};`
   ].join('\n');
 }

@@ -1,6 +1,10 @@
 import { Style } from '../style';
 
-export default function definitions(style: Style): string {
+export function headerDefinitions(style: Style): string {
+  return [`#define ${style.macroUnusedDef} SIZE_MAX`].join('\n');
+}
+
+export function sourceDefinitions(style: Style): string {
   return [
     `#ifndef ${style.macroAlignmentDef}`,
     style.tab(1, `#define ${style.macroAlignmentDef} 64 /* Large enough for AVX-512 */`),
@@ -35,25 +39,10 @@ export default function definitions(style: Style): string {
     style.tab(1, `#if defined(__APPLE__) || defined(__linux__)`),
     style.tab(2, `#define ${style.macroAlignedFreeFunc}(ptr) free(ptr)`),
     style.tab(2, `#define ${style.macroAlignedAllocFunc}(align, size) aligned_alloc(align, size)`),
-    style.tab(2, `#define ${style.macroAlignedReallocFunc}(ptr, align, size) do {\\`),
-    style.tab(3, `if ((size == 0) || (align <= alignof(max_align_t)))\\`),
-    style.tab(3, `{\\`),
-    style.tab(4, `return realloc(ptr, size);\\`),
-    style.tab(3, `}\\`),
-    style.tab(3, `size_t new_size = (size + (align - 1)) & (~(align - 1));\\`),
-    style.tab(3, `void *new_ptr = aligned_alloc(align, new_size);\\`),
-    style.tab(3, `if (new_ptr != NULL)\\`),
-    style.tab(3, `{\\`),
-    style.tab(4, `size_t old_usable_size = ${style.macroMallocUsableSizeFunc}(ptr);\\`),
-    style.tab(4, `size_t copy_size = new_size < old_usable_size ? new_size : old_usable_size;\\`),
-    style.tab(4, `if (ptr != NULL)\\`),
-    style.tab(4, `{\\`),
-    style.tab(5, `memcpy(new_ptr, ptr, copy_size);\\`),
-    style.tab(5, `free(ptr);\\`),
-    style.tab(4, `}\\`),
-    style.tab(3, `}\\`),
-    style.tab(3, `return new_ptr;\\`),
-    style.tab(2, `} while(0)`),
+    style.tab(
+      2,
+      `#define ${style.macroAlignedReallocFunc}(ptr, align, size) ${style.alignedReallocFunc}(ptr, align, size)`
+    ),
     style.tab(1, `#elif defined(_MSC_VER)`),
     style.tab(2, `#define ${style.macroAlignedFreeFunc}(ptr) _aligned_free(ptr)`),
     style.tab(2, `#define ${style.macroAlignedAllocFunc}(align, size) _aligned_alloc(size, align)`),

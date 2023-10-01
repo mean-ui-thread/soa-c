@@ -1,12 +1,17 @@
 import { Style } from '../style';
 
 export function headerIncludes(style: Style): string {
-  return style.includes.concat(['#include <stddef.h> /* size_t */']).join('\n');
+  return style.includes
+    .concat([
+      '#include <assert.h> /* assert() */',
+      '#include <stdint.h> /* SIZE_MAX */',
+      '#include <stddef.h> /* size_t */'
+    ])
+    .join('\n');
 }
 
 export function sourceIncludes(style: Style): string {
   return [
-    '#include <assert.h>',
     '#if defined(__APPLE__)',
     style.tab(1, '#include <malloc/malloc.h>'),
     style.tab(1, '#include <stdalign.h>'),
